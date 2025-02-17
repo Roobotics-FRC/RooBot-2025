@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,20 +13,23 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class GoTo extends Command {
     private final CommandSwerveDrivetrain drivetrain;
-    private final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric();
+    private final FieldCentric drive;
     private final double maxSpeed;
 
     private final PIDController xPidController = new PIDController(1, 0.0, 0.0);
     private final PIDController yPidController = new PIDController(1, 0.0, 0.0);
-    private final PIDController yawPidController = new PIDController(1, 0.0, 0.0);
+    private final PIDController yawPidController = new PIDController(10, 0.0, 0.0);
 
     NetworkTable driveStateTable = NetworkTableInstance.getDefault().getTable("DriveState");
     StructSubscriber<Pose2d> poseSubscriber = driveStateTable.getStructTopic("Pose", Pose2d.struct).subscribe(new Pose2d());
-    
 
     public GoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed) {
         this.drivetrain = drivetrain;
         this.maxSpeed = maxSpeed;
+        
+        // Initialize the drive request with proper configuration
+        this.drive = new SwerveRequest.FieldCentric();
+        
         addRequirements(drivetrain);
     }
 
@@ -38,20 +42,23 @@ public class GoTo extends Command {
     @Override
     public void execute() {
         System.out.println(poseSubscriber.get());
-        drivetrain.applyRequest(() ->
-            drive.withVelocityX(-1 * maxSpeed) // Drive forward with negative Y (forward)
-                .withVelocityY(-1 * maxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(0) // Drive counterclockwise with negative X (left)
+        // Apply the fixed speeds
+        drivetrain.setControl(
+            drive.withVelocityX(xPidController.calculate(poseSubscriber.get().getX()) * maxSpeed)
+                .withVelocityY(yPidController.calculate(poseSubscriber.get().getY()) * maxSpeed)
+                .withRotationalRate(yawPidController.calculate(poseSubscriber.get().getRotation().getRadians()))
         );
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        // Make sure to stop the drivetrain when the command ends
+        drivetrain.setControl(new SwerveRequest.SwerveDriveBrake());
     }
 
     @Override
     public boolean isFinished() {
         return xPidController.atSetpoint() && yPidController.atSetpoint() && yawPidController.atSetpoint();
-    }
-
-    @Override
-    public void end(boolean interrupted) {
     }
 
     private void config() {
