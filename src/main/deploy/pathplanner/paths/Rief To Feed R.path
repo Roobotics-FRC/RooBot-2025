@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.269,
+        "y": 3.02723259310324
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.433489279098694,
+        "y": 2.541297955544598
+      },
+      "isLocked": false,
+      "linkedName": "Rief 1 Score"
+    },
+    {
+      "anchor": {
+        "x": 1.589673894023422,
+        "y": 0.6347553168722413
+      },
+      "prevControl": {
+        "x": 2.941988441810879,
+        "y": 1.691705428497612
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Feeder R"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 55.0
+  },
+  "reversed": false,
+  "folder": "R3 Piece",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 119.99999999999999
+  },
+  "useDefaultConstraints": true
+}

@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SimplePath"
+            "pathName": "New New Path"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Go To Corral"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -57,7 +56,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
     LimelightHelpers.PoseEstimate limelightMeasurement;
-    private final Pigeon2 pigeon = new Pigeon2(0,"Drive Base");
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -216,7 +214,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 ),
                 new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(10, 0, 0),
+                    new PIDConstants(5, 0, 0.02),
                     // PID constants for rotation
                     new PIDConstants(7, 0, 0)
                 ),
@@ -282,13 +280,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
 
-        LimelightHelpers.SetRobotOrientation("limelight", pigeon.getYaw().getValueAsDouble(), 0, 0, 0, 0, 0); 
+        LimelightHelpers.SetRobotOrientation("limelight", getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0); 
         limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-        
+
+
         try {
             if (limelightMeasurement != null && limelightMeasurement.pose != null) {
                 if (limelightMeasurement.pose.getX() != 0) {
-                    addVisionMeasurement(limelightMeasurement.pose, limelightMeasurement.timestampSeconds);
+                    Pose2d adjustedPose = new Pose2d(
+                        limelightMeasurement.pose.getX() + 0.43,
+                        limelightMeasurement.pose.getY(),
+                        limelightMeasurement.pose.getRotation()
+                    );
+                    addVisionMeasurement(adjustedPose, limelightMeasurement.timestampSeconds);
                     SmartDashboard.putBoolean("LimeLight", true);
                 } else{
                     SmartDashboard.putBoolean("LimeLight", false);
