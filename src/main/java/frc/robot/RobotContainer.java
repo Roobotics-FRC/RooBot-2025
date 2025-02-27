@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.GoTo;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.SuperstructureSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -48,7 +48,7 @@ public class RobotContainer {
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
-    private final ElevatorSubsystem m_ElevatorSubsystem = new ElevatorSubsystem();
+    private final SuperstructureSubsystem m_SuperstructureSubsystem= new SuperstructureSubsystem();
 
     public RobotContainer() {
         //! Register the autonomous commands in here
