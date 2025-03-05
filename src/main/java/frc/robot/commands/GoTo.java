@@ -21,15 +21,16 @@ public class GoTo extends Command {
     private double translationalKP = 0.53;
     private double translationalKI = 0.001;
     private double translationalKD = 0.02;
+    private double thanslationalIZone = 0.5;
 
     double poseX;
     double poseY;
 
-    private double x;
-    private double y;
-    private double yaw;
+    private final double x;
+    private final double y;
+    private final double yaw;
 
-    private final PIDController xPidController = new PIDController(translationalKP+0.02, translationalKI, translationalKD);
+    private final PIDController xPidController = new PIDController(translationalKP, translationalKI, translationalKD);
     private final PIDController yPidController = new PIDController(translationalKP, translationalKI, translationalKD);
     private final PIDController yawPidController = new PIDController(7, 0, 0.0);
 
@@ -52,6 +53,7 @@ public class GoTo extends Command {
         SmartDashboard.putNumber("Translational KP", translationalKP);
         SmartDashboard.putNumber("Translational KI", translationalKI);
         SmartDashboard.putNumber("Translational KD", translationalKD);
+        SmartDashboard.putNumber("Translational IZOne", thanslationalIZone);
     }
 
     @Override
@@ -69,20 +71,21 @@ public class GoTo extends Command {
         SmartDashboard.putNumber("Pose Y", poseY-y);
         //!For Testing Only - Remove in final code
         // Read PID constants from SmartDashboard
-        translationalKP = SmartDashboard.getNumber("Translational KP", translationalKP);
-        translationalKI = SmartDashboard.getNumber("Translational KI", translationalKI);
-        translationalKD = SmartDashboard.getNumber("Translational KD", translationalKD);
+        // translationalKP = SmartDashboard.getNumber("Translational KP", translationalKP);
+        // translationalKI = SmartDashboard.getNumber("Translational KI", translationalKI);
+        // translationalKD = SmartDashboard.getNumber("Translational KD", translationalKD);
+        // thanslationalIZone = SmartDashboard.getNumber("Translational IZOne", thanslationalIZone);
 
         // Update PID controllers with new values
         xPidController.setP(translationalKP);
         xPidController.setI(translationalKI);
         xPidController.setD(translationalKD);
+        xPidController.setIZone(thanslationalIZone);
 
         yPidController.setP(translationalKP);
         yPidController.setI(translationalKI);
         yPidController.setD(translationalKD);
-        //!For Testing Only - Remove in final code
-
+        yPidController.setIZone(thanslationalIZone);
         // Apply the fixed speeds
         drivetrain.setControl(
             drive.withVelocityX(xPidController.calculate(poseX) * maxSpeed)
@@ -117,7 +120,7 @@ public class GoTo extends Command {
 
         xPidController.setTolerance(0.05);
         yPidController.setTolerance(0.05);
-        yawPidController.setTolerance(0.1);
+        yawPidController.setTolerance(0.05);
         yawPidController.enableContinuousInput(-180, 180);
     }
 

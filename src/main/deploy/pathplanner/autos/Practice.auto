@@ -1,0 +1,67 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "To Rief PR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GoTo"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L3 Score"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "From Rief PR"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "To Rief PR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GoTo"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L2 Score"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "From Rief PR"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}
