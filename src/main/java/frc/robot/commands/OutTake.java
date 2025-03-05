@@ -5,9 +5,11 @@ import frc.robot.subsystems.SuperstructureSubsystem;
 
 public class OutTake extends Command{
     SuperstructureSubsystem superstructureSubsystem;
+    boolean stop;
 
-    public OutTake(SuperstructureSubsystem m_SuperstructureSubsystem) {
+    public OutTake(SuperstructureSubsystem m_SuperstructureSubsystem, boolean stop) {
         this.superstructureSubsystem = m_SuperstructureSubsystem;
+        this.stop = stop;
     }
 
     @Override
@@ -26,5 +28,11 @@ public class OutTake extends Command{
 
     @Override
     public void end(boolean interrupted) {
+        if (stop){
+            superstructureSubsystem.stopMotors();
+        }
+        if (interrupted){
+            superstructureSubsystem.stopMotors();
+        }
     }
 }

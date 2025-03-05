@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.Positions;
 import frc.robot.Constants.WaitTimes;
-import frc.robot.commands.AutoDeAlgee;
+import frc.robot.commands.DeAlgee;
 import frc.robot.commands.GoTo;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.MoveHoper;
@@ -62,11 +62,11 @@ public class RobotContainer {
     Command ClimbDown = new InstantCommand(() -> m_SuperstructureSubsystem.climbDown());
     Command ClimbUp = new InstantCommand(() -> m_SuperstructureSubsystem.climbUp(120));
 
-    Command L2DeAlgee = new MoveElevator(m_SuperstructureSubsystem, Positions.L2A, false).andThen(new AutoDeAlgee(m_SuperstructureSubsystem, Positions.L2AE)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
-    Command L3DeAlgee = new MoveElevator(m_SuperstructureSubsystem, Positions.L3A, false).andThen(new AutoDeAlgee(m_SuperstructureSubsystem, Positions.L3AE)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
-    Command L2Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false).andThen(new OutTake(m_SuperstructureSubsystem)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
-    Command L3Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false).andThen(new OutTake(m_SuperstructureSubsystem)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
-    Command L4Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L4, false).andThen(new OutTake(m_SuperstructureSubsystem)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L4E,true).andThen(new WaitCommand(0.2).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false))));
+    Command L2DeAlgee = new MoveElevator(m_SuperstructureSubsystem, Positions.L2A, false).andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L2AE)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
+    Command L3DeAlgee = new MoveElevator(m_SuperstructureSubsystem, Positions.L3A, false).andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L3AE)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
+    Command L2Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false).andThen(new OutTake(m_SuperstructureSubsystem,false)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
+    Command L3Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false).andThen(new OutTake(m_SuperstructureSubsystem,false)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
+    Command L4Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L4, false).andThen(new OutTake(m_SuperstructureSubsystem,false)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L4E,true).andThen(new WaitCommand(0.2).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false))));
 
 
     public RobotContainer() {
@@ -122,7 +122,7 @@ public class RobotContainer {
         new JoystickButton(op_joystick, 6).onTrue(L3Score);
         new JoystickButton(op_joystick, 7).onTrue(L4Score);
         new JoystickButton(op_joystick, 10).onTrue(ElevatorDown);
-        new JoystickButton(op_joystick, 11).whileTrue(new OutTake(m_SuperstructureSubsystem));
+        new JoystickButton(op_joystick, 11).whileTrue(new OutTake(m_SuperstructureSubsystem,true));
         new JoystickButton(op_joystick, 12).whileTrue(L2DeAlgee);
         new JoystickButton(op_joystick, 13).whileTrue(L3DeAlgee);
         new JoystickButton(op_joystick, 14).onTrue(HopperDown);

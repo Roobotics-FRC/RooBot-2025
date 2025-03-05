@@ -41,6 +41,8 @@ public class MoveElevator extends Command{
 
     @Override
     public void end(boolean interrupted) {
-        superstructureSubsystem.stopMotors();
+        if(!velocity){
+            superstructureSubsystem.stopMotors();
+        }
     }
 }
