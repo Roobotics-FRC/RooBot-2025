@@ -9,11 +9,14 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructSubscriber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.SuperstructureSubsystem;
 
 public class GoTo extends Command {
     private final CommandSwerveDrivetrain drivetrain;
+    private final SuperstructureSubsystem superstructureSubsystem;
     private final FieldCentric drive;
     private final double maxSpeed;
 
@@ -37,8 +40,9 @@ public class GoTo extends Command {
     NetworkTable driveStateTable = NetworkTableInstance.getDefault().getTable("DriveState");
     StructSubscriber<Pose2d> poseSubscriber = driveStateTable.getStructTopic("Pose", Pose2d.struct).subscribe(new Pose2d());
 
-    public GoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, double x, double y, double yaw) {
+    public GoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, double x, double y, double yaw, SuperstructureSubsystem superstructureSubsystem) {
         this.drivetrain = drivetrain;
+        this.superstructureSubsystem = superstructureSubsystem;
         this.maxSpeed = maxSpeed;
         this.x = x;
         this.y = y;
@@ -60,6 +64,7 @@ public class GoTo extends Command {
     public void initialize() {
         config();
         setSetpoint(x, y, yaw);
+        superstructureSubsystem.setLED(Color.kGreen, 0.2, 0.1);
     }
 
     @Override
@@ -102,6 +107,8 @@ public class GoTo extends Command {
         translationalKP = SmartDashboard.getNumber("Translational KP", translationalKP);
         translationalKI = SmartDashboard.getNumber("Translational KI", translationalKI);
         translationalKD = SmartDashboard.getNumber("Translational KD", translationalKD);
+
+        superstructureSubsystem.setLED(Color.kBlue, 0, 0);
     }
 
     @Override

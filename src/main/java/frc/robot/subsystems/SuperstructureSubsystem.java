@@ -10,7 +10,12 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
 
+import static edu.wpi.first.units.Units.Seconds;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SuperstructureSubsystem extends SubsystemBase {
@@ -34,13 +39,32 @@ public class SuperstructureSubsystem extends SubsystemBase {
     private final SparkMax hoper = new SparkMax(31, SparkMax.MotorType.kBrushless);
 
     private final Joystick controller;
-    
+
+    //! LED THINGY
+    private final AddressableLED m_led;
+    private final AddressableLEDBuffer m_ledBuffer;
+
     public SuperstructureSubsystem(Joystick controller) {
         this.controller = controller;
         configElevator();
 
         L_elevatorMotor.setPosition(0);
         R_elevatorMotor.setPosition(0);
+
+
+        //!LED
+        m_led = new AddressableLED(0); // replace with PWM port
+        m_led.setLength(60);
+        m_led.setData(m_ledBuffer = new AddressableLEDBuffer(60)); // replace with proper length ?
+        m_led.setData(m_ledBuffer); // apply buffer 
+        m_led.start();
+
+        //!Do we need this?
+        // try (PWM led = new PWM(0)) {
+        //     led.setPulseTimeMicroseconds(1500);
+        // }
+
+        setLED(Color.kBlue, 0,0);
     }
 
     private void configElevator() {
@@ -69,6 +93,26 @@ public class SuperstructureSubsystem extends SubsystemBase {
         L_elevatorMotor.getConfigurator().apply(feedbackConfigs);
         R_elevatorMotor.getConfigurator().apply(feedbackConfigs);
         ClimbMotor.getConfigurator().apply(climbConfig);
+    }
+    
+    /**
+     * Sets the LED strip to display a static color pattern with optional blinking functionality.
+     *
+     * @param color The Color object representing the desired LED color
+     * @param time_on Duration in milliseconds that the LED stays on during the pattern
+     * @param time_off Duration in milliseconds that the LED stays off during the pattern
+     */
+    public void setLED(Color color, double time_on, double time_off) {
+        if (time_on == 0 && time_off == 0) {
+            LEDPattern acolor = LEDPattern.solid(color);
+            acolor.applyTo(m_ledBuffer);
+            m_led.setData(m_ledBuffer);
+        } else {
+            LEDPattern acolor = LEDPattern.solid(color);
+            acolor.blink(Seconds.of(time_on), Seconds.of(time_on));
+            acolor.applyTo(m_ledBuffer);
+            m_led.setData(m_ledBuffer);
+        }
     }
 
     public void setElevatorPosition(double position) {

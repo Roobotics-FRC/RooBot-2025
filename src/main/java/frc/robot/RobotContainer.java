@@ -71,9 +71,9 @@ public class RobotContainer {
 
     public RobotContainer() {
         //! Register the autonomous commands in here
-        NamedCommands.registerCommand("Go To Rief 1", new GoTo(drivetrain,MaxSpeed,5.269,3.027,0));
-        NamedCommands.registerCommand("Go To Rief 2", new GoTo(drivetrain,MaxSpeed,4.006,2.853,0));
-        NamedCommands.registerCommand("GoTo", new GoTo(drivetrain,MaxSpeed,3.15,3.95,0));
+        NamedCommands.registerCommand("Go To Rief 1", new GoTo(drivetrain,MaxSpeed,5.269,3.027,0, m_SuperstructureSubsystem));
+        NamedCommands.registerCommand("Go To Rief 2", new GoTo(drivetrain,MaxSpeed,4.006,2.853,0, m_SuperstructureSubsystem));
+        NamedCommands.registerCommand("GoTo", new GoTo(drivetrain,MaxSpeed,3.15,3.95,0, m_SuperstructureSubsystem));
         NamedCommands.registerCommand("L3 Score", L3Score);
         NamedCommands.registerCommand("L2 Score", L2Score);
         NamedCommands.registerCommand("L2 Score", L4Score);
@@ -116,7 +116,7 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        joystick.x().whileTrue(new GoTo(drivetrain,MaxSpeed,3.15,3.95,0));
+        joystick.x().whileTrue(new GoTo(drivetrain,MaxSpeed,3.15,3.95,0, m_SuperstructureSubsystem));
 
         new JoystickButton(op_joystick, 5).onTrue(L2Score);
         new JoystickButton(op_joystick, 6).onTrue(L3Score);
