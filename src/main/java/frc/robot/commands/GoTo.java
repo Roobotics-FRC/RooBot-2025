@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.StructSubscriber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SuperstructureSubsystem;
 
@@ -20,18 +21,17 @@ public class GoTo extends Command {
     private final FieldCentric drive;
     private final double maxSpeed;
 
-    // Initial PID constants
-    private double translationalKP = 0.53;
-    private double translationalKI = 0.001;
-    private double translationalKD = 0.02;
-    private double thanslationalIZone = 0.5;
-
     double poseX;
     double poseY;
 
     private final double x;
     private final double y;
     private final double yaw;
+
+    private double translationalKP = Constants.PID.translationalKP;
+    private double translationalKI = Constants.PID.translationalKI;
+    private double translationalKD = Constants.PID.translationalKD;
+    private double thanslationalIZone = Constants.PID.thanslationalIZone;
 
     private final PIDController xPidController = new PIDController(translationalKP, translationalKI, translationalKD);
     private final PIDController yPidController = new PIDController(translationalKP, translationalKI, translationalKD);

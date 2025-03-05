@@ -18,4 +18,18 @@ public class Constants {
     public static final class WaitTimes{
         public static final double scoreWait = 0.5;
     }
+    public static final class PID{
+        public static final double translationalKP = 0.53;
+        public static final double translationalKI = 0.001;
+        public static final double translationalKD = 0.02;
+        public static final double thanslationalIZone = 0.5;
+
+        public static final double rotationalKP = 7;
+        public static final double rotationalKI = 0;
+        public static final double rotationalKD = 0;
+        public static final double rotationalIZone = 0;
+
+        public static final double rotationalTolerance = 0;
+        public static final double translationalTolerance = 0;
+    }
 }

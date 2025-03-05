@@ -5,6 +5,8 @@ build.gradle
 # Prerequisites
 *.d
 
+TemplateCMD.txt
+
 # Compiled Object files
 *.slo
 *.lo
