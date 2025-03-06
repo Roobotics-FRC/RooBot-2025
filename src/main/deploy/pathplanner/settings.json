@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.762,
-  "robotLength": 0.762,
+  "robotWidth": 0.87,
+  "robotLength": 0.87,
   "holonomicMode": true,
   "pathFolders": [
     "R3 Piece"

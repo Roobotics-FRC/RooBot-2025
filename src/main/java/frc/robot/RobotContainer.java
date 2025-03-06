@@ -9,6 +9,11 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructSubscriber;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -36,9 +41,12 @@ public class RobotContainer {
     private final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
+    NetworkTable driveStateTable = NetworkTableInstance.getDefault().getTable("DriveState");
+    StructSubscriber<Pose2d> poseSubscriber = driveStateTable.getStructTopic("Pose", Pose2d.struct).subscribe(new Pose2d());
+
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.15).withRotationalDeadband(MaxAngularRate * 0.15) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -56,6 +64,8 @@ public class RobotContainer {
 
     private final SuperstructureSubsystem m_SuperstructureSubsystem= new SuperstructureSubsystem(op_joystick);
 
+    private final PIDController yawPidController = new PIDController(Constants.PID.rotationalKP, Constants.PID.rotationalKI, Constants.PID.rotationalKD);
+
     Command ElevatorDown = new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false);
     Command HopperDown = new MoveHoper(m_SuperstructureSubsystem, -3);
     Command HopperUp = new MoveHoper(m_SuperstructureSubsystem, 0.5);
@@ -64,7 +74,7 @@ public class RobotContainer {
 
     Command L2DeAlgee = new MoveElevator(m_SuperstructureSubsystem, Positions.L2A, false).andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L2AE)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
     Command L3DeAlgee = new MoveElevator(m_SuperstructureSubsystem, Positions.L3A, false).andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L3AE)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
-    Command L2Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false).andThen(new OutTake(m_SuperstructureSubsystem,false)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
+    Command L2Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L2, false).andThen(new OutTake(m_SuperstructureSubsystem,false)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
     Command L3Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false).andThen(new OutTake(m_SuperstructureSubsystem,false)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
     Command L4Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L4, false).andThen(new OutTake(m_SuperstructureSubsystem,false)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L4E,true).andThen(new WaitCommand(0.2).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false))));
 
@@ -93,7 +103,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * 0.75) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed * 0.75) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate * 1) // Drive counterclockwise with negative X (left)
+                    .withRotationalRate(getYaw() * MaxAngularRate * 1) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -112,7 +122,7 @@ public class RobotContainer {
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        joystick.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -127,12 +137,25 @@ public class RobotContainer {
         new JoystickButton(op_joystick, 13).whileTrue(L3DeAlgee);
         new JoystickButton(op_joystick, 14).onTrue(HopperDown);
         new JoystickButton(op_joystick, 15).onTrue(HopperUp);
-        new JoystickButton(op_joystick, 16).onTrue(ClimbDown);
-        //new JoystickButton(op_joystick, 17).onTrue(ClimbUp);
+        // new JoystickButton(op_joystick, 16).onTrue(ClimbDown);
+        // new JoystickButton(op_joystick, 17).onTrue(ClimbUp);
     }
 
     public Command getAutonomousCommand() {
         /* Run the path selected from the auto chooser */
         return autoChooser.getSelected();
+    }
+
+    public double getYaw() {
+        double yaw = poseSubscriber.get().getRotation().getDegrees();
+        double yawC;
+        if(joystick.leftBumper().getAsBoolean()){
+            yawC = yawPidController.calculate(yaw, Constants.Positions.LeftFeeder);
+        }else if(joystick.rightBumper().getAsBoolean()){
+            yawC = yawPidController.calculate(yaw, Constants.Positions.RightFeeder);
+        } else{
+            yawC = -joystick.getRightX();
+        }
+        return yawC;
     }
 }

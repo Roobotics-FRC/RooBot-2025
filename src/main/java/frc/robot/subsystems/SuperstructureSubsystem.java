@@ -46,6 +46,8 @@ public class SuperstructureSubsystem extends SubsystemBase {
     private final AddressableLED m_led;
     private final AddressableLEDBuffer m_ledBuffer;
 
+    private final int kLength = 360;
+
     public SuperstructureSubsystem(Joystick controller) {
         this.controller = controller;
         configElevator();
@@ -56,8 +58,8 @@ public class SuperstructureSubsystem extends SubsystemBase {
 
         //!LED
         m_led = new AddressableLED(0); // replace with PWM port
-        m_led.setLength(60);
-        m_led.setData(m_ledBuffer = new AddressableLEDBuffer(60)); // replace with proper length ?
+        m_led.setLength(kLength);
+        m_led.setData(m_ledBuffer = new AddressableLEDBuffer(kLength)); // replace with proper length ?
         m_led.setData(m_ledBuffer); // apply buffer 
         m_led.start();
 
@@ -65,8 +67,6 @@ public class SuperstructureSubsystem extends SubsystemBase {
         // try (PWM led = new PWM(0)) {
         //     led.setPulseTimeMicroseconds(1500);
         // }
-
-        setLED(Color.kBlue, 0,0);
     }
 
     private void configElevator() {
@@ -111,8 +111,8 @@ public class SuperstructureSubsystem extends SubsystemBase {
             m_led.setData(m_ledBuffer);
         } else {
             LEDPattern acolor = LEDPattern.solid(color);
-            acolor.blink(Seconds.of(time_on), Seconds.of(time_on));
-            acolor.applyTo(m_ledBuffer);
+            LEDPattern blink = acolor.blink(Seconds.of(time_on), Seconds.of(time_off));
+            blink.applyTo(m_ledBuffer);
             m_led.setData(m_ledBuffer);
         }
     }
@@ -164,6 +164,8 @@ public class SuperstructureSubsystem extends SubsystemBase {
         double closestFiducial = LimelightHelpers.getFiducialID("limelight");
 
         SmartDashboard.putNumber("Closest Fiducial ID: ", closestFiducial);
+
+        m_led.setData(m_ledBuffer);
 
         //! Hand Controll elevator height
         // if (controller.getRawAxis(3) != 1){
