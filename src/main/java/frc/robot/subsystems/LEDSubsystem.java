@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -16,6 +19,9 @@ public class LEDSubsystem extends SubsystemBase {
     private double breathingValue = 0;
     private boolean breathingUp = true;
     private double time = 0;
+    
+    private final LEDPattern m_rainbow;
+    private final LEDPattern m_scrollingRainbow;
 
     public enum LEDState {
         OFF,
@@ -28,7 +34,8 @@ public class LEDSubsystem extends SubsystemBase {
 
     public LEDSubsystem(int pwmPort, int ledCount) {
         this.ledCount = ledCount;
-        
+        m_rainbow = LEDPattern.rainbow(255, ledCount);
+        m_scrollingRainbow = m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(1/120));
         ledStrip = new AddressableLED(pwmPort);
         ledBuffer = new AddressableLEDBuffer(ledCount);
         
@@ -86,7 +93,7 @@ public class LEDSubsystem extends SubsystemBase {
             ledBuffer.setHSV(i, hue, 255, 128);
         }
     }
-
+    
     private void updateChase() {
         int position = (int)(time * 10) % ledCount;
         for (int i = 0; i < ledCount; i++) {
@@ -121,16 +128,22 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public void setDisabledMode() {
-        setLEDState(LEDState.RAINBOW, Color.kWhite);
-    }
-
-    public void setTeleopMode() {
         if (DriverStation.getAlliance().isPresent()) {
             Color allianceColor = DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 
                 Color.kRed : Color.kBlue;
             setLEDState(LEDState.SOLID, allianceColor);
         } else {
             setLEDState(LEDState.SOLID, Color.kWhite);
+        }
+    }
+
+    public void setTeleopMode() {
+        if (DriverStation.getAlliance().isPresent()) {
+            Color allianceColor = DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 
+                Color.kRed : Color.kBlue;
+            setLEDState(LEDState.BREATHING, allianceColor);
+        } else {
+            setLEDState(LEDState.BREATHING, Color.kWhite);
         }
     }
 

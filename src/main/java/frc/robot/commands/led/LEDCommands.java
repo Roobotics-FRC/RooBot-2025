@@ -22,11 +22,13 @@ public class LEDCommands {
     }
 
     public Command disabled() {
-        return new SetLEDState(ledSubsystem, LEDState.RAINBOW, Color.kWhite);
+        return new SetLEDState(ledSubsystem, LEDState.SOLID, 
+            DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red ? 
+            Color.kRed : Color.kBlue);
     }
 
     public Command teleop() {
-        return new SetLEDState(ledSubsystem, LEDState.SOLID, 
+        return new SetLEDState(ledSubsystem, LEDState.BREATHING, 
             DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red ? 
             Color.kRed : Color.kBlue);
     }

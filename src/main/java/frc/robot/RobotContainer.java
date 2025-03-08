@@ -40,6 +40,7 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SuperstructureSubsystem;
 
 public class RobotContainer {
+    public static final String teleopInit = null;
     private final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
@@ -63,7 +64,7 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    private final LEDSubsystem ledSubsystem = new LEDSubsystem(0, 120);
+    private final LEDSubsystem ledSubsystem = new LEDSubsystem(0, 360);
     private final LEDCommands ledCommands = new LEDCommands(ledSubsystem);
 
     /* Path follower */
@@ -114,18 +115,18 @@ public class RobotContainer {
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
         .andThen(ledCommands.teleop());
 
-        Command GoToR = new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRief)
-        .deadlineFor(ledCommands.alignment())
+        Command GoToR = ledCommands.alignment()
+        .andThen(new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -0.1, ledCommands))
         .andThen(ledCommands.teleop());
 
-        Command GoToL = new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.yRief)
-        .deadlineFor(ledCommands.alignment())
+        Command GoToL = ledCommands.alignment()
+        .andThen(new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRief, ledCommands))
         .andThen(ledCommands.teleop());
 
     public RobotContainer() {
         //! Register the autonomous commands in here
-        NamedCommands.registerCommand("GoToL",  new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.yRief));
-        NamedCommands.registerCommand("GoToR",  new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.xRief));
+        NamedCommands.registerCommand("GoToL",  new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.yRief, ledCommands));
+        NamedCommands.registerCommand("GoToR",  new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.xRief, ledCommands));
         NamedCommands.registerCommand("L3 Score", L3Score);
         NamedCommands.registerCommand("L2 Score", L2Score);
         NamedCommands.registerCommand("L4 Score", L4Score);
@@ -170,8 +171,8 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        joystick.x().whileTrue(GoToR);
-        joystick.b().whileTrue(GoToL);
+        joystick.x().whileTrue(GoToL);
+        joystick.b().whileTrue(GoToR);
 
         new JoystickButton(op_joystick, 5).onTrue(L2Score);
         new JoystickButton(op_joystick, 6).onTrue(L3Score);
@@ -200,6 +201,10 @@ public class RobotContainer {
     }
 
     public void disabledInit() {
+        ledCommands.disabled().schedule();
+    }
+
+    public void robotInit(){
         ledCommands.disabled().schedule();
     }
 

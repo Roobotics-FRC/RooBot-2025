@@ -32,12 +32,12 @@ public class Constants {
         public static final double rotationalKD = 0;
         public static final double rotationalIZone = 0;
 
-        public static final double rotationalTolerance = 0.05;
+        public static final double rotationalTolerance = 1;
         public static final double translationalTolerance = 0.1;
     }
 
     public static final class Offsets{
-        public static final double xRief = -0.35;
-        public static final double yRief = 0.13;
+        public static final double xRief = -0.5;
+        public static final double yRief = 0.25;
     }
 }
