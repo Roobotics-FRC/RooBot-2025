@@ -114,19 +114,19 @@ public class RobotContainer {
         .andThen(new WaitCommand(0.2))
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
         .andThen(ledCommands.teleop());
-
-        Command GoToR = ledCommands.alignment()
-        .andThen(new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -0.1, ledCommands))
+    
+    Command GoToR = ledCommands.alignment()
+        .andThen(new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -0.135, ledSubsystem))
         .andThen(ledCommands.teleop());
 
-        Command GoToL = ledCommands.alignment()
-        .andThen(new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRief, ledCommands))
+    Command GoToL = ledCommands.alignment()
+        .andThen(new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRief, ledSubsystem))
         .andThen(ledCommands.teleop());
 
     public RobotContainer() {
         //! Register the autonomous commands in here
-        NamedCommands.registerCommand("GoToL",  new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.yRief, ledCommands));
-        NamedCommands.registerCommand("GoToR",  new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.xRief, ledCommands));
+        NamedCommands.registerCommand("GoToL",  new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.yRief, ledSubsystem));
+        NamedCommands.registerCommand("GoToR",  new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.xRief, ledSubsystem));
         NamedCommands.registerCommand("L3 Score", L3Score);
         NamedCommands.registerCommand("L2 Score", L2Score);
         NamedCommands.registerCommand("L4 Score", L4Score);

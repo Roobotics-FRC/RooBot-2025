@@ -25,12 +25,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-
+    m_robotContainer.disabledInit();
+    System.out.println("ASKDSDAd");
   }
+
 
   @Override
   public void disabledPeriodic() {
-    m_robotContainer.disabledInit();
   }
 
   @Override

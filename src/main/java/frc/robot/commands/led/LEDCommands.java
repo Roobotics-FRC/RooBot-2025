@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.LEDSubsystem.LEDState;
-
 public class LEDCommands {
     private final LEDSubsystem ledSubsystem;
 
@@ -21,12 +20,14 @@ public class LEDCommands {
         return new SetLEDState(ledSubsystem, LEDState.BLINKING, Color.kGreen);
     }
 
+    // Changed to SOLID state with alliance color
     public Command disabled() {
         return new SetLEDState(ledSubsystem, LEDState.SOLID, 
             DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red ? 
             Color.kRed : Color.kBlue);
     }
 
+    // Changed to BREATHING state with alliance color
     public Command teleop() {
         return new SetLEDState(ledSubsystem, LEDState.BREATHING, 
             DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red ? 

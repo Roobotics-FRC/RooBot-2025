@@ -13,15 +13,17 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.commands.led.LEDCommands;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.LEDSubsystem.LEDState;
 
 public class AutoGoTo extends Command {
     private final CommandSwerveDrivetrain drivetrain;
     private final FieldCentric drive;
-    private final LEDCommands ledCommands;
+    private final LEDSubsystem ledSubsystem;
     private final double maxSpeed;
     private final double relativeX;
     private final double relativeY; 
@@ -43,7 +45,7 @@ public class AutoGoTo extends Command {
     
     private final PIDController xPidController = new PIDController(Constants.PID.translationalKP, Constants.PID.translationalKI, Constants.PID.translationalKD);
     private final PIDController yPidController = new PIDController(Constants.PID.translationalKP, Constants.PID.translationalKI, Constants.PID.translationalKD);
-    private final PIDController yawPidController = new PIDController(1, Constants.PID.rotationalKI, Constants.PID.rotationalKD);
+    private final PIDController yawPidController = new PIDController(0.2, Constants.PID.rotationalKI, Constants.PID.rotationalKD);
 
     /**
      * Creates a new AutoGoTo command that goes to the closest valid AprilTag
@@ -53,12 +55,12 @@ public class AutoGoTo extends Command {
      * @param relativeY Distance to maintain in Y direction relative to the tag in meters
      * @param superstructureSubsystem The superstructure subsystem for LEDs
      */
-    public AutoGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, double relativeX, double relativeY, LEDCommands ledCommands) {
+    public AutoGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, double relativeX, double relativeY, LEDSubsystem ledSubsystem) {
         this.drivetrain = drivetrain;
-        this.ledCommands = ledCommands;
         this.maxSpeed = maxSpeed;
         this.relativeX = relativeX;
         this.relativeY = relativeY;
+        this.ledSubsystem = ledSubsystem;
         this.drive = new SwerveRequest.FieldCentric();
         
         addRequirements(drivetrain);
@@ -70,6 +72,7 @@ public class AutoGoTo extends Command {
         }
         
         config();
+        SmartDashboard.putNumber("Rotations", 0.2);
     }
 
     @Override
@@ -79,12 +82,11 @@ public class AutoGoTo extends Command {
         if (closestTagId != -1) {
             updateTargetPosition();
         }
-        SmartDashboard.putNumber("Rotations", rotationalKP);
+        rotationalKP = SmartDashboard.getNumber("Rotations", rotationalKP);
     }
 
     @Override
     public void execute() {
-        rotationalKP = SmartDashboard.getNumber("Rotations", rotationalKP);
         yawPidController.setP(rotationalKP);
         if (closestTagId == -1) {
             findClosestAprilTag();
@@ -106,7 +108,14 @@ public class AutoGoTo extends Command {
     @Override
     public void end(boolean interrupted) {
         drivetrain.setControl(new SwerveRequest.SwerveDriveBrake());
-        ledCommands.teleop();
+        // Add this to ensure we return to alliance color even if interrupted
+        if (interrupted || !xPidController.atSetpoint() || !yPidController.atSetpoint()) {
+            if (DriverStation.getAlliance().isPresent()) {
+                Color allianceColor = DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 
+                    Color.kRed : Color.kBlue;
+                ledSubsystem.setLEDState(LEDState.SOLID, allianceColor);
+            }
+        }
     }
 
     @Override

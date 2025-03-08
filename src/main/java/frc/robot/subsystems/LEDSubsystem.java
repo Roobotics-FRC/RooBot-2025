@@ -41,6 +41,7 @@ public class LEDSubsystem extends SubsystemBase {
         
         ledStrip.setLength(ledCount);
         ledStrip.start();
+        setDisabledMode();
     }
 
     @Override
