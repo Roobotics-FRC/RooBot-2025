@@ -182,10 +182,6 @@ public class RobotContainer {
         new JoystickButton(op_joystick, 13).whileTrue(L3DeAlgee);
         new JoystickButton(op_joystick, 14).onTrue(HopperDown);
         new JoystickButton(op_joystick, 15).onTrue(HopperUp);
-        // new JoystickButton(o_Joystick, 5).whileTrue(new AutoGoTo(drivetrain, MaxSpeed, m_SuperstructureSubsystem));
-        // new JoystickButton(o_Joystick, 11).whileTrue(new AutoGoTo(drivetrain, MaxSpeed, m_SuperstructureSubsystem));
-        // new JoystickButton(op_joystick, 16).onTrue(ClimbDown);
-        // new JoystickButton(op_joystick, 17).onTrue(ClimbUp);
     }
 
     public Command getAutonomousCommand() {

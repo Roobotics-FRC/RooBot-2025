@@ -41,24 +41,12 @@ public class LEDSubsystem extends SubsystemBase {
         time += 0.02; // Assuming 50Hz refresh rate
 
         switch (currentState) {
-            case BREATHING:
-                updateBreathing();
-                break;
-            case BLINKING:
-                updateBlinking();
-                break;
-            case RAINBOW:
-                updateRainbow();
-                break;
-            case CHASE:
-                updateChase();
-                break;
-            case SOLID:
-                setSolidColor(currentColor);
-                break;
-            case OFF:
-                setSolidColor(Color.kBlack);
-                break;
+            case BREATHING -> updateBreathing();
+            case BLINKING -> updateBlinking();
+            case RAINBOW -> updateRainbow();
+            case CHASE -> updateChase();
+            case SOLID -> setSolidColor(currentColor);
+            case OFF -> setSolidColor(Color.kBlack);
         }
 
         ledStrip.setData(ledBuffer);
