@@ -33,6 +33,7 @@ import frc.robot.commands.DeAlgee;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.MoveHoper;
 import frc.robot.commands.OutTake;
+import frc.robot.commands.led.LEDCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
@@ -63,6 +64,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final LEDSubsystem ledSubsystem = new LEDSubsystem(0, 120);
+    private final LEDCommands ledCommands = new LEDCommands(ledSubsystem);
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -77,16 +79,53 @@ public class RobotContainer {
     Command ClimbDown = new InstantCommand(() -> m_SuperstructureSubsystem.climbDown());
     Command ClimbUp = new InstantCommand(() -> m_SuperstructureSubsystem.climbUp(120));
 
-    Command L2DeAlgee = new MoveElevator(m_SuperstructureSubsystem, Positions.L2A, false).andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L2AE)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
-    Command L3DeAlgee = new MoveElevator(m_SuperstructureSubsystem, Positions.L3A, false).andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L3AE)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
-    Command L2Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L2, false).andThen(new OutTake(m_SuperstructureSubsystem,false)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
-    Command L3Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false).andThen(new OutTake(m_SuperstructureSubsystem,false)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false));
-    Command L4Score = new MoveElevator(m_SuperstructureSubsystem, Positions.L4, false).andThen(new OutTake(m_SuperstructureSubsystem,false)).andThen(new WaitCommand(WaitTimes.scoreWait)).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L4E,true).andThen(new WaitCommand(0.2).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false))));
+    Command L2DeAlgee = ledCommands.intaking()
+    .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L2A, false))
+    .andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L2AE))
+    .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
+    .andThen(ledCommands.teleop());
 
+    Command L3DeAlgee = ledCommands.intaking()
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L3A, false))
+        .andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L3AE))
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
+        .andThen(ledCommands.teleop());
+
+    Command L2Score = ledCommands.readyToScore()
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L2, false))
+        .andThen(new OutTake(m_SuperstructureSubsystem, false))
+        .andThen(new WaitCommand(WaitTimes.scoreWait))
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
+        .andThen(ledCommands.teleop());
+
+    Command L3Score = ledCommands.readyToScore()
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false))
+        .andThen(new OutTake(m_SuperstructureSubsystem, false))
+        .andThen(new WaitCommand(WaitTimes.scoreWait))
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
+        .andThen(ledCommands.teleop());
+
+    Command L4Score = ledCommands.readyToScore()
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L4, false))
+        .andThen(new OutTake(m_SuperstructureSubsystem, false))
+        .andThen(new WaitCommand(WaitTimes.scoreWait))
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L4E, true))
+        .andThen(new WaitCommand(0.2))
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
+        .andThen(ledCommands.teleop());
+
+        Command GoToR = new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRief)
+        .deadlineFor(ledCommands.alignment())
+        .andThen(ledCommands.teleop());
+
+        Command GoToL = new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.yRief)
+        .deadlineFor(ledCommands.alignment())
+        .andThen(ledCommands.teleop());
 
     public RobotContainer() {
         //! Register the autonomous commands in here
-        NamedCommands.registerCommand("Align", new AutoGoTo(drivetrain, MaxSpeed, -0.35, 0.13, m_SuperstructureSubsystem));
+        NamedCommands.registerCommand("GoToL",  new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.yRief));
+        NamedCommands.registerCommand("GoToR",  new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -Constants.Offsets.xRief));
         NamedCommands.registerCommand("L3 Score", L3Score);
         NamedCommands.registerCommand("L2 Score", L2Score);
         NamedCommands.registerCommand("L4 Score", L4Score);
@@ -131,8 +170,8 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        joystick.x().whileTrue(new AutoGoTo(drivetrain, MaxSpeed, -0.35, 0.13, m_SuperstructureSubsystem));
-        joystick.b().whileTrue(new AutoGoTo(drivetrain, MaxSpeed, -0.35, -0.13, m_SuperstructureSubsystem));
+        joystick.x().whileTrue(GoToR);
+        joystick.b().whileTrue(GoToL);
 
         new JoystickButton(op_joystick, 5).onTrue(L2Score);
         new JoystickButton(op_joystick, 6).onTrue(L3Score);
@@ -155,17 +194,17 @@ public class RobotContainer {
     }
 
     public void autonomousInit() {
-        ledSubsystem.setAutonomousMode();
+        ledCommands.autonomous().schedule();
         // ... other auto init code
     }
 
     public void teleopInit() {
-        ledSubsystem.setTeleopMode();
+        ledCommands.teleop().schedule();
         // ... other teleop init code
     }
 
     public void disabledInit() {
-        ledSubsystem.setDisabledMode();
+        ledCommands.disabled().schedule();
     }
 
     public double getYaw() {

@@ -13,7 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Align"
+            "name": "GoToL"
           }
         },
         {
@@ -37,7 +37,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Align"
+            "name": "GoToR"
           }
         },
         {

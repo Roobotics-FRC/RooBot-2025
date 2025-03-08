@@ -116,7 +116,6 @@ public class LEDSubsystem extends SubsystemBase {
         }
     }
 
-    // Public control methods
     public void setLEDState(LEDState state, Color color) {
         currentState = state;
         currentColor = color;

@@ -15,11 +15,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.SuperstructureSubsystem;
 
 public class AutoGoTo extends Command {
     private final CommandSwerveDrivetrain drivetrain;
-    private final SuperstructureSubsystem superstructureSubsystem;
     private final FieldCentric drive;
     private final double maxSpeed;
     private final double relativeX;
@@ -50,9 +48,8 @@ public class AutoGoTo extends Command {
      * @param relativeY Distance to maintain in Y direction relative to the tag in meters
      * @param superstructureSubsystem The superstructure subsystem for LEDs
      */
-    public AutoGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, double relativeX, double relativeY, SuperstructureSubsystem superstructureSubsystem) {
+    public AutoGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, double relativeX, double relativeY) {
         this.drivetrain = drivetrain;
-        this.superstructureSubsystem = superstructureSubsystem;
         this.maxSpeed = maxSpeed;
         this.relativeX = relativeX;
         this.relativeY = relativeY;
