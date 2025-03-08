@@ -28,13 +28,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.Positions;
 import frc.robot.Constants.WaitTimes;
+import frc.robot.commands.AutoGoTo;
 import frc.robot.commands.DeAlgee;
-import frc.robot.commands.GoTo;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.MoveHoper;
 import frc.robot.commands.OutTake;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SuperstructureSubsystem;
 
 public class RobotContainer {
@@ -57,7 +58,11 @@ public class RobotContainer {
 
     private final Joystick op_joystick = new Joystick(1);
 
+    private final Joystick o_Joystick = new Joystick(2);
+
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    private final LEDSubsystem ledSubsystem = new LEDSubsystem(0, 120);
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -81,18 +86,18 @@ public class RobotContainer {
 
     public RobotContainer() {
         //! Register the autonomous commands in here
-        NamedCommands.registerCommand("Go To Rief 1", new GoTo(drivetrain,MaxSpeed,5.269,3.027,0, m_SuperstructureSubsystem));
-        NamedCommands.registerCommand("Go To Rief 2", new GoTo(drivetrain,MaxSpeed,4.006,2.853,0, m_SuperstructureSubsystem));
-        NamedCommands.registerCommand("GoTo", new GoTo(drivetrain,MaxSpeed,3.15,3.95,0, m_SuperstructureSubsystem));
+        NamedCommands.registerCommand("Align", new AutoGoTo(drivetrain, MaxSpeed, -0.35, 0.13, m_SuperstructureSubsystem));
         NamedCommands.registerCommand("L3 Score", L3Score);
         NamedCommands.registerCommand("L2 Score", L2Score);
-        NamedCommands.registerCommand("L2 Score", L4Score);
+        NamedCommands.registerCommand("L4 Score", L4Score);
         NamedCommands.registerCommand("L2 DeAlgee", L2DeAlgee);
         NamedCommands.registerCommand("L3 DeAlgee", L3DeAlgee);
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
+
+        yawPidController.enableContinuousInput(-180, 180);
     }
 
     private void configureBindings() {
@@ -101,9 +106,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * 0.75) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * 0.75) // Drive left with negative X (left)
-                    .withRotationalRate(getYaw() * MaxAngularRate * 1) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(getYaw() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -122,11 +127,12 @@ public class RobotContainer {
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        joystick.a().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        joystick.x().whileTrue(new GoTo(drivetrain,MaxSpeed,3.15,3.95,0, m_SuperstructureSubsystem));
+        joystick.x().whileTrue(new AutoGoTo(drivetrain, MaxSpeed, -0.35, 0.13, m_SuperstructureSubsystem));
+        joystick.b().whileTrue(new AutoGoTo(drivetrain, MaxSpeed, -0.35, -0.13, m_SuperstructureSubsystem));
 
         new JoystickButton(op_joystick, 5).onTrue(L2Score);
         new JoystickButton(op_joystick, 6).onTrue(L3Score);
@@ -137,6 +143,8 @@ public class RobotContainer {
         new JoystickButton(op_joystick, 13).whileTrue(L3DeAlgee);
         new JoystickButton(op_joystick, 14).onTrue(HopperDown);
         new JoystickButton(op_joystick, 15).onTrue(HopperUp);
+        // new JoystickButton(o_Joystick, 5).whileTrue(new AutoGoTo(drivetrain, MaxSpeed, m_SuperstructureSubsystem));
+        // new JoystickButton(o_Joystick, 11).whileTrue(new AutoGoTo(drivetrain, MaxSpeed, m_SuperstructureSubsystem));
         // new JoystickButton(op_joystick, 16).onTrue(ClimbDown);
         // new JoystickButton(op_joystick, 17).onTrue(ClimbUp);
     }
@@ -146,9 +154,24 @@ public class RobotContainer {
         return autoChooser.getSelected();
     }
 
+    public void autonomousInit() {
+        ledSubsystem.setAutonomousMode();
+        // ... other auto init code
+    }
+
+    public void teleopInit() {
+        ledSubsystem.setTeleopMode();
+        // ... other teleop init code
+    }
+
+    public void disabledInit() {
+        ledSubsystem.setDisabledMode();
+    }
+
     public double getYaw() {
         double yaw = poseSubscriber.get().getRotation().getDegrees();
         double yawC;
+
         if(joystick.leftBumper().getAsBoolean()){
             yawC = yawPidController.calculate(yaw, Constants.Positions.LeftFeeder);
         }else if(joystick.rightBumper().getAsBoolean()){

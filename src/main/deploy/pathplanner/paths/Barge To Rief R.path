@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.783304794520547,
-        "y": 4.708668664383562
+        "x": 7.152226027397259,
+        "y": 3.266202910958904
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.788573698593294,
-        "y": 4.944289429294285
+        "x": 6.220633561643836,
+        "y": 2.9656892123287673
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.269,
-        "y": 3.027
+        "x": 5.289041095890411,
+        "y": 2.6952268835616437
       },
       "prevControl": {
-        "x": 6.247702930146133,
-        "y": 3.4544830904357724
+        "x": 6.267744026036544,
+        "y": 3.122709973997416
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "R3 Piece",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

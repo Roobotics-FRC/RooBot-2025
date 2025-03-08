@@ -1,102 +1,105 @@
 package frc.robot.commands;
 
+import java.util.Set;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructSubscriber;
-import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SuperstructureSubsystem;
 
 public class AutoGoTo extends Command {
-    private double ID;
-    private final boolean RightLeft;
-    
-    //!Positions
-    private final Pose2d ID17R = new Pose2d(new Translation2d(3.980, 2.810), new Rotation2d(Math.toDegrees(60)));
-    private final Pose2d ID17L = new Pose2d(new Translation2d(3.685, 2.975), new Rotation2d(Math.toDegrees(120)));
-    private final Pose2d ID18R = new Pose2d(new Translation2d(3.15, 3.95), new Rotation2d(Math.toDegrees(0)));
-    private final Pose2d ID18L = new Pose2d(new Translation2d(3.15, 4.195), new Rotation2d(Math.toDegrees(0)));
-    private final Pose2d ID19R = new Pose2d(new Translation2d(3.685, 5.08), new Rotation2d(Math.toDegrees(300)));
-    private final Pose2d ID19L = new Pose2d(new Translation2d(3.975, 5.252), new Rotation2d(Math.toDegrees(300)));
-    private final Pose2d ID20R = new Pose2d(new Translation2d(4.99, 5.25), new Rotation2d(Math.toDegrees(240)));
-    private final Pose2d ID20L = new Pose2d(new Translation2d(5.28, 5.08), new Rotation2d(Math.toDegrees(240)));
-    private final Pose2d ID21R = new Pose2d(new Translation2d(5.8, 4.195), new Rotation2d(Math.toDegrees(180)));
-    private final Pose2d ID21L = new Pose2d(new Translation2d(5.790, 3.865), new Rotation2d(Math.toDegrees(180)));
-    private final Pose2d ID22R = new Pose2d(new Translation2d(5.285, 2.972), new Rotation2d(Math.toDegrees(120)));
-    private final Pose2d ID22L = new Pose2d(new Translation2d(4.995, 2.810), new Rotation2d(Math.toDegrees(120)));
-    
     private final CommandSwerveDrivetrain drivetrain;
     private final SuperstructureSubsystem superstructureSubsystem;
     private final FieldCentric drive;
     private final double maxSpeed;
+    private final double relativeX;
+    private final double relativeY; 
+    
+    private double targetX;
+    private double targetY;
+    private double targetYaw;
 
-    double poseX;
-    double poseY;
+    private AprilTagFieldLayout fieldLayout;
+    private int closestTagId = -1;
 
-    private double x = 0;
-    private double y = 0;
-    private double yaw = 0;
-
+    // Valid AprilTag IDs (6-11 and 17-22)
+    private static final Set<Integer> VALID_TAG_IDS = Set.of(
+        6, 7, 8, 9, 10, 11,
+        17, 18, 19, 20, 21, 22
+    );
+    
     private final PIDController xPidController = new PIDController(Constants.PID.translationalKP, Constants.PID.translationalKI, Constants.PID.translationalKD);
     private final PIDController yPidController = new PIDController(Constants.PID.translationalKP, Constants.PID.translationalKI, Constants.PID.translationalKD);
     private final PIDController yawPidController = new PIDController(Constants.PID.rotationalKP, Constants.PID.rotationalKI, Constants.PID.rotationalKD);
 
-    NetworkTable driveStateTable = NetworkTableInstance.getDefault().getTable("DriveState");
-    StructSubscriber<Pose2d> poseSubscriber = driveStateTable.getStructTopic("Pose", Pose2d.struct).subscribe(new Pose2d());
-
     /**
-     * Constructs a new AutoGoTo command for autonomous robot navigation.
-     * @param RightLeft Boolean flag indicating right (true) or left (false) side movement preference
+     * Creates a new AutoGoTo command that goes to the closest valid AprilTag
+     * @param drivetrain The swerve drivetrain subsystem
+     * @param maxSpeed Maximum speed for movement
+     * @param relativeX Distance to maintain in X direction relative to the tag in meters
+     * @param relativeY Distance to maintain in Y direction relative to the tag in meters
+     * @param superstructureSubsystem The superstructure subsystem for LEDs
      */
-    public AutoGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, SuperstructureSubsystem superstructureSubsystem, boolean RightLeft) {
+    public AutoGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, double relativeX, double relativeY, SuperstructureSubsystem superstructureSubsystem) {
         this.drivetrain = drivetrain;
         this.superstructureSubsystem = superstructureSubsystem;
         this.maxSpeed = maxSpeed;
-        this.RightLeft = RightLeft;
-        
+        this.relativeX = relativeX;
+        this.relativeY = relativeY;
         this.drive = new SwerveRequest.FieldCentric();
         
         addRequirements(drivetrain);
-
+        
+        try {
+            fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+        } catch (Exception e) {
+            DriverStation.reportError("Failed to load AprilTag field layout", e.getStackTrace());
+        }
+        
         config();
-
-        //!FOR NOW
-        ID = 18;
     }
 
     @Override
     public void initialize() {
-        superstructureSubsystem.setLED(Color.kGreen, 0.2, 0.1);
         resetPID();
-        getSetpoint();
-        setSetpoint(x, y, yaw);
+        findClosestAprilTag();
+        if (closestTagId != -1) {
+            updateTargetPosition();
+        }
     }
 
     @Override
     public void execute() {
-        poseX = poseSubscriber.get().getX();
-        poseY = poseSubscriber.get().getY();
+        if (closestTagId == -1) {
+            findClosestAprilTag();
+            if (closestTagId != -1) {
+                updateTargetPosition();
+            }
+            return;
+        }
+
+        Pose2d currentPose = drivetrain.getState().Pose;
 
         drivetrain.setControl(
-            drive.withVelocityX(xPidController.calculate(poseX) * maxSpeed)
-                .withVelocityY(yPidController.calculate(poseY) * maxSpeed)
-                .withRotationalRate(yawPidController.calculate(poseSubscriber.get().getRotation().getDegrees()))
+            drive.withVelocityX(xPidController.calculate(currentPose.getX()) * maxSpeed)
+                .withVelocityY(yPidController.calculate(currentPose.getY()) * maxSpeed)
+                .withRotationalRate(yawPidController.calculate(currentPose.getRotation().getDegrees()))
         );
     }
 
     @Override
     public void end(boolean interrupted) {
         drivetrain.setControl(new SwerveRequest.SwerveDriveBrake());
-        superstructureSubsystem.setLED(Color.kBlue, 0, 0);
     }
 
     @Override
@@ -120,65 +123,55 @@ public class AutoGoTo extends Command {
         yawPidController.enableContinuousInput(-180, 180);
     }
 
+    private void findClosestAprilTag() {
+        if (fieldLayout == null) return;
+
+        Pose2d robotPose = drivetrain.getState().Pose;
+        Translation2d robotTranslation = robotPose.getTranslation();
+        
+        double closestDistance = Double.MAX_VALUE;
+        int closestId = -1;
+
+        // Find the closest valid AprilTag
+        for (var tagPose : fieldLayout.getTags()) {
+            if (!VALID_TAG_IDS.contains(tagPose.ID)) continue;
+
+            Translation2d tagTranslation = tagPose.pose.getTranslation().toTranslation2d();
+            double distance = robotTranslation.getDistance(tagTranslation);
+            
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestId = tagPose.ID;
+            }
+        }
+
+        closestTagId = closestId;
+    }
+
+    private void updateTargetPosition() {
+        if (fieldLayout == null || closestTagId == -1) return;
+
+        var targetTag = fieldLayout.getTagPose(closestTagId);
+        if (targetTag.isEmpty()) return;
+
+        Pose3d tagPose = targetTag.get();
+        
+        double tagRotationDegrees = tagPose.getRotation().toRotation2d().getDegrees();
+        double tagRotationRadians = Math.toRadians(tagRotationDegrees);
+
+        double dx = relativeX * Math.cos(tagRotationRadians) - relativeY * Math.sin(tagRotationRadians);
+        double dy = relativeX * Math.sin(tagRotationRadians) + relativeY * Math.cos(tagRotationRadians);
+
+        targetX = tagPose.getX() - dx;
+        targetY = tagPose.getY() - dy;
+        targetYaw = tagRotationDegrees + (tagRotationDegrees > 0 ? -180 : 180);
+
+        setSetpoint(targetX, targetY, targetYaw);
+    }
+
     private void setSetpoint(double x, double y, double yaw) {
         xPidController.setSetpoint(x);
         yPidController.setSetpoint(y);
         yawPidController.setSetpoint(yaw);
-    }
-
-    private void getSetpoint() {
-        if(RightLeft){
-            if(ID == 17){
-                x = ID17R.getX();
-                y = ID17R.getY();
-                yaw = ID17R.getRotation().getDegrees();
-            } else if(ID == 18){
-                x = ID18R.getX();
-                y = ID18R.getY();
-                yaw = ID18R.getRotation().getDegrees();
-            } else if(ID == 19){
-                x = ID19R.getX();
-                y = ID19R.getY();
-                yaw = ID19R.getRotation().getDegrees();
-            } else if(ID == 20){
-                x = ID20R.getX();
-                y = ID20R.getY();
-                yaw = ID20R.getRotation().getDegrees();
-            } else if(ID == 21){
-                x = ID21R.getX();
-                y = ID21R.getY();
-                yaw = ID21R.getRotation().getDegrees();
-            } else if(ID == 22){
-                x = ID22R.getX();
-                y = ID22R.getY();
-                yaw = ID22R.getRotation().getDegrees();
-            }
-        } else {
-            if(ID == 17){
-                x = ID17L.getX();
-                y = ID17L.getY();
-                yaw = ID17L.getRotation().getDegrees();
-            } else if(ID == 18){
-                x = ID18L.getX();
-                y = ID18L.getY();
-                yaw = ID18L.getRotation().getDegrees();
-            } else if(ID == 19){
-                x = ID19L.getX();
-                y = ID19L.getY();
-                yaw = ID19L.getRotation().getDegrees();
-            } else if(ID == 20){
-                x = ID20L.getX();
-                y = ID20L.getY();
-                yaw = ID20L.getRotation().getDegrees();
-            } else if(ID == 21){
-                x = ID21L.getX();
-                y = ID21L.getY();
-                yaw = ID21L.getRotation().getDegrees();
-            } else if(ID == 22){
-                x = ID22L.getX();
-                y = ID22L.getY();
-                yaw = ID22L.getRotation().getDegrees();
-            }
-        }
     }
 }

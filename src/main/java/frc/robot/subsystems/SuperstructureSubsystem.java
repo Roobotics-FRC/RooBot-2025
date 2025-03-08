@@ -10,15 +10,8 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
 
-import static edu.wpi.first.units.Units.Seconds;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.LEDPattern;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
 
 public class SuperstructureSubsystem extends SubsystemBase {
     final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
@@ -42,12 +35,6 @@ public class SuperstructureSubsystem extends SubsystemBase {
 
     private final Joystick controller;
 
-    //! LED THINGY
-    private final AddressableLED m_led;
-    private final AddressableLEDBuffer m_ledBuffer;
-
-    private final int kLength = 360;
-
     public SuperstructureSubsystem(Joystick controller) {
         this.controller = controller;
         configElevator();
@@ -55,18 +42,6 @@ public class SuperstructureSubsystem extends SubsystemBase {
         L_elevatorMotor.setPosition(0);
         R_elevatorMotor.setPosition(0);
 
-
-        //!LED
-        m_led = new AddressableLED(0); // replace with PWM port
-        m_led.setLength(kLength);
-        m_led.setData(m_ledBuffer = new AddressableLEDBuffer(kLength)); // replace with proper length ?
-        m_led.setData(m_ledBuffer); // apply buffer 
-        m_led.start();
-
-        //!Do we need this?
-        // try (PWM led = new PWM(0)) {
-        //     led.setPulseTimeMicroseconds(1500);
-        // }
     }
 
     private void configElevator() {
@@ -95,26 +70,6 @@ public class SuperstructureSubsystem extends SubsystemBase {
         L_elevatorMotor.getConfigurator().apply(feedbackConfigs);
         R_elevatorMotor.getConfigurator().apply(feedbackConfigs);
         ClimbMotor.getConfigurator().apply(climbConfig);
-    }
-    
-    /**
-     * Sets the LED strip to display a static color pattern with optional blinking functionality.
-     *
-     * @param color The Color object representing the desired LED color
-     * @param time_on Duration in milliseconds that the LED stays on during the pattern
-     * @param time_off Duration in milliseconds that the LED stays off during the pattern
-     */
-    public void setLED(Color color, double time_on, double time_off) {
-        if (time_on == 0 && time_off == 0) {
-            LEDPattern acolor = LEDPattern.solid(color);
-            acolor.applyTo(m_ledBuffer);
-            m_led.setData(m_ledBuffer);
-        } else {
-            LEDPattern acolor = LEDPattern.solid(color);
-            LEDPattern blink = acolor.blink(Seconds.of(time_on), Seconds.of(time_off));
-            blink.applyTo(m_ledBuffer);
-            m_led.setData(m_ledBuffer);
-        }
     }
 
     public void setElevatorPosition(double position) {
@@ -161,16 +116,13 @@ public class SuperstructureSubsystem extends SubsystemBase {
     public void periodic() {
         getElevatorPosition();
 
-        double closestFiducial = LimelightHelpers.getFiducialID("limelight");
+        // double ID = LimelightHelpers.getFiducialID("limelight");
+        // SmartDashboard.putNumber("ID", ID);
 
-        SmartDashboard.putNumber("Closest Fiducial ID: ", closestFiducial);
-
-        m_led.setData(m_ledBuffer);
-
-        //! Hand Controll elevator height
+        // //! Hand Controll elevator height
         // if (controller.getRawAxis(3) != 1){
-        //     setElevatorPosition((((controller.getRawAxis(3)*-1)+1)/2)*50);
-        //     System.out.println((((controller.getRawAxis(3)*-1)+1)/2)*50);
+        //     setElevatorPosition((((controller.getRawAxis(3)*-1)+1)/2)*70);
+        //     System.out.println(getElevatorPosition());
         // }
     }
 }

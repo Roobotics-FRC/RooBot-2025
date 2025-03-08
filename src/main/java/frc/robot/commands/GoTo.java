@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructSubscriber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -64,7 +63,6 @@ public class GoTo extends Command {
     public void initialize() {
         config();
         setSetpoint(x, y, yaw);
-        superstructureSubsystem.setLED(Color.kGreen, 0.2, 0.1);
     }
 
     @Override
@@ -95,7 +93,7 @@ public class GoTo extends Command {
         drivetrain.setControl(
             drive.withVelocityX(xPidController.calculate(poseX) * maxSpeed)
                 .withVelocityY(yPidController.calculate(poseY) * maxSpeed)
-                .withRotationalRate(yawPidController.calculate(poseSubscriber.get().getRotation().getRadians()))
+                .withRotationalRate(yawPidController.calculate(poseSubscriber.get().getRotation().getDegrees()))
         );
     }
 
@@ -107,8 +105,7 @@ public class GoTo extends Command {
         translationalKP = SmartDashboard.getNumber("Translational KP", translationalKP);
         translationalKI = SmartDashboard.getNumber("Translational KI", translationalKI);
         translationalKD = SmartDashboard.getNumber("Translational KD", translationalKD);
-
-        superstructureSubsystem.setLED(Color.kBlue, 0, 0);
+        drivetrain.setControl(new SwerveRequest.SwerveDriveBrake());
     }
 
     @Override
