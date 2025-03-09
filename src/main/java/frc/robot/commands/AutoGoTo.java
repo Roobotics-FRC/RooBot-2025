@@ -13,12 +13,10 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.LEDSubsystem.LEDState;
 
 public class AutoGoTo extends Command {
     private final CommandSwerveDrivetrain drivetrain;
@@ -109,13 +107,7 @@ public class AutoGoTo extends Command {
     public void end(boolean interrupted) {
         drivetrain.setControl(new SwerveRequest.SwerveDriveBrake());
         // Add this to ensure we return to alliance color even if interrupted
-        if (interrupted || !xPidController.atSetpoint() || !yPidController.atSetpoint()) {
-            if (DriverStation.getAlliance().isPresent()) {
-                Color allianceColor = DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 
-                    Color.kRed : Color.kBlue;
-                ledSubsystem.setLEDState(LEDState.SOLID, allianceColor);
-            }
-        }
+        ledSubsystem.setTeleopMode();
     }
 
     @Override

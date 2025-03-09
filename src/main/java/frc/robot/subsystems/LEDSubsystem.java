@@ -149,7 +149,7 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     public void setIntaking() {
-        setLEDState(LEDState.CHASE, Color.kGreen);
+        setLEDState(LEDState.BLINKING, Color.kOrange);
     }
 
     public void setHasGamePiece() {

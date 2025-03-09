@@ -35,7 +35,7 @@ public class LEDCommands {
     }
 
     public Command intaking() {
-        return new SetLEDState(ledSubsystem, LEDState.CHASE, Color.kGreen);
+        return new SetLEDState(ledSubsystem, LEDState.BLINKING, Color.kOrange);
     }
 
     public Command hasGamePiece() {

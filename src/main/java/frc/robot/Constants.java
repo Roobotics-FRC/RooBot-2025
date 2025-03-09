@@ -4,15 +4,15 @@ public class Constants {
     public static final class Positions{
         public static final double L0 = 0.5;
 
-        public static final double L2 = 20;
-        public static final double L3 = 39;
+        public static final double L2 = 23;
+        public static final double L3 = 40;
         public static final double L4 = 67;
         public static final double L4E = 69;
 
-        public static final double L2A = 16;
-        public static final double L2AE = 24;
-        public static final double L3A = 32;
-        public static final double L3AE = 40;
+        public static final double L2A = 19;
+        public static final double L2AE = 28;
+        public static final double L3A = 36;
+        public static final double L3AE = 45;
 
         public static final double LeftFeeder = -55;
         public static final double RightFeeder = 55;
@@ -22,7 +22,7 @@ public class Constants {
         public static final double scoreWait = 0.5;
     }
     public static final class PID{
-        public static final double translationalKP = 0.53;
+        public static final double translationalKP = 0.6;
         public static final double translationalKI = 0.001;
         public static final double translationalKD = 0.02;
         public static final double thanslationalIZone = 0.5;

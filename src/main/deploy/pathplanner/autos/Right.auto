@@ -13,7 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "GoToL"
+            "name": "GoToR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L2 Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HopperUp"
           }
         },
         {
@@ -41,6 +53,18 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "GoToR"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "HopperUp"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Rief To Feeder R 2"
@@ -49,7 +73,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

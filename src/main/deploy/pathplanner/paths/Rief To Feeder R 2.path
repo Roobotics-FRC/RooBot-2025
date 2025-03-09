@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7263698630136988,
-        "y": 2.6050727739726027
+        "x": 5.559503424657534,
+        "y": 2.5900470890410965
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3831067754370525,
-        "y": 1.6592533800407834
+        "x": 5.216240337080888,
+        "y": 1.6442276951092771
       },
       "isLocked": false,
       "linkedName": "Rief 2 Score"
     },
     {
       "anchor": {
-        "x": 1.589673894023422,
-        "y": 0.6347553168722413
+        "x": 1.2321061643835618,
+        "y": 0.937221746575342
       },
       "prevControl": {
-        "x": 2.117400160061486,
-        "y": 1.4089339482370393
+        "x": 1.7598324304216255,
+        "y": 1.7114003779401399
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": "R3 Piece",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 126.8698976458439
   },
   "useDefaultConstraints": true
 }
