@@ -52,7 +52,7 @@ public class SuperstructureSubsystem extends SubsystemBase {
         elevatorConfig.Slot0.kP = ElevatorP;
         elevatorConfig.Slot0.kI = ElevatorI;
         elevatorConfig.Slot0.kD = ElevatorD;
-        elevatorConfig.CurrentLimits.SupplyCurrentLimit = 10;
+        elevatorConfig.CurrentLimits.SupplyCurrentLimit = 15;
         elevatorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         elevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         

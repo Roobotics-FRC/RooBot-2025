@@ -10,10 +10,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructSubscriber;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -21,7 +17,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -44,12 +39,9 @@ public class RobotContainer {
     private final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    NetworkTable driveStateTable = NetworkTableInstance.getDefault().getTable("DriveState");
-    StructSubscriber<Pose2d> poseSubscriber = driveStateTable.getStructTopic("Pose", Pose2d.struct).subscribe(new Pose2d());
-
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.15).withRotationalDeadband(MaxAngularRate * 0.15) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -77,20 +69,20 @@ public class RobotContainer {
     Command ElevatorDown = new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false);
     Command HopperDown = new MoveHoper(m_SuperstructureSubsystem, -3);
     Command HopperUp = new MoveHoper(m_SuperstructureSubsystem, 0.5);
-    Command ClimbDown = new InstantCommand(() -> m_SuperstructureSubsystem.climbDown());
-    Command ClimbUp = new InstantCommand(() -> m_SuperstructureSubsystem.climbUp(120));
+    // Command ClimbDown = new InstantCommand(() -> m_SuperstructureSubsystem.climbDown());
+    // Command ClimbUp = new InstantCommand(() -> m_SuperstructureSubsystem.climbUp(120));
 
     Command L2DeAlgee = ledCommands.intaking()
         .andThen(new MoveHoper(m_SuperstructureSubsystem, -3))
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L2A, false))
-        .andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L2AE))
+        .andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L2AE, ledSubsystem))
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
         .andThen(ledCommands.teleop());
 
     Command L3DeAlgee = ledCommands.intaking()
         .andThen(new MoveHoper(m_SuperstructureSubsystem, -3))
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L3A, false))
-        .andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L3AE))
+        .andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L3AE, ledSubsystem))
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
         .andThen(ledCommands.teleop());
 
@@ -179,6 +171,7 @@ public class RobotContainer {
 
         joystick.x().whileTrue(GoToL);
         joystick.b().whileTrue(GoToR);
+        joystick.a().whileTrue(new AutoGoTo(drivetrain, MaxSpeed, -1.5, 0 , ledSubsystem));
 
         new JoystickButton(op_joystick, 5).onTrue(L2Score);
         new JoystickButton(op_joystick, 6).onTrue(L3Score);
@@ -215,7 +208,7 @@ public class RobotContainer {
     }
 
     public double getYaw() {
-        double yaw = poseSubscriber.get().getRotation().getDegrees();
+        double yaw = drivetrain.getState().Pose.getRotation().getDegrees();
         double yawC;
 
         if(joystick.leftBumper().getAsBoolean()){

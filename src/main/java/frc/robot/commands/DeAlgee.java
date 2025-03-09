@@ -1,14 +1,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SuperstructureSubsystem;
 
 public class DeAlgee extends Command{
     SuperstructureSubsystem superstructureSubsystem;
+    LEDSubsystem ledSubsystem;
     double StPose;
 
-    public DeAlgee(SuperstructureSubsystem m_SuperstructureSubsystem, double StPose) {
+    public DeAlgee(SuperstructureSubsystem m_SuperstructureSubsystem, double StPose, LEDSubsystem ledSubsystem) {
         this.superstructureSubsystem = m_SuperstructureSubsystem;
+        this.ledSubsystem = ledSubsystem;
         this.StPose = StPose;
     }
 
@@ -32,5 +35,6 @@ public class DeAlgee extends Command{
     public void end(boolean interrupted) {
         superstructureSubsystem.setElevatorSpeed(0);
         superstructureSubsystem.stopMotors();
+        ledSubsystem.setTeleopMode();
     }
 }
