@@ -1,11 +1,8 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -19,9 +16,6 @@ public class LEDSubsystem extends SubsystemBase {
     private double breathingValue = 0;
     private boolean breathingUp = true;
     private double time = 0;
-    
-    private final LEDPattern m_rainbow;
-    private final LEDPattern m_scrollingRainbow;
 
     public enum LEDState {
         OFF,
@@ -34,8 +28,6 @@ public class LEDSubsystem extends SubsystemBase {
 
     public LEDSubsystem(int pwmPort, int ledCount) {
         this.ledCount = ledCount;
-        m_rainbow = LEDPattern.rainbow(255, ledCount);
-        m_scrollingRainbow = m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(1/120));
         ledStrip = new AddressableLED(pwmPort);
         ledBuffer = new AddressableLEDBuffer(ledCount);
         
@@ -46,15 +38,14 @@ public class LEDSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        time += 0.02; // Assuming 50Hz refresh rate
+        time += 0.02;
 
         switch (currentState) {
-            case BREATHING -> updateBreathing();
-            case BLINKING -> updateBlinking();
-            case RAINBOW -> updateRainbow();
-            case CHASE -> updateChase();
-            case SOLID -> setSolidColor(currentColor);
-            case OFF -> setSolidColor(Color.kBlack);
+                    case BREATHING -> updateBreathing();
+                    case BLINKING -> updateBlinking();
+                    case SOLID -> setSolidColor(currentColor);
+                    case OFF -> setSolidColor(Color.kBlack);
+                    default -> throw new IllegalArgumentException("Unexpected value: " + currentState);
         }
 
         ledStrip.setData(ledBuffer);
@@ -88,24 +79,6 @@ public class LEDSubsystem extends SubsystemBase {
         setSolidColor(isOn ? currentColor : Color.kBlack);
     }
 
-    private void updateRainbow() {
-        for (int i = 0; i < ledCount; i++) {
-            final int hue = (int)((time * 50 + (i * 180.0 / ledCount)) % 180);
-            ledBuffer.setHSV(i, hue, 255, 128);
-        }
-    }
-    
-    private void updateChase() {
-        int position = (int)(time * 10) % ledCount;
-        for (int i = 0; i < ledCount; i++) {
-            if (i == position) {
-                ledBuffer.setLED(i, currentColor);
-            } else {
-                ledBuffer.setLED(i, Color.kBlack);
-            }
-        }
-    }
-
     public void setSolidColor(Color color) {
         for (int i = 0; i < ledCount; i++) {
             ledBuffer.setLED(i, color);
@@ -128,7 +101,7 @@ public class LEDSubsystem extends SubsystemBase {
         setLEDState(LEDState.BLINKING, Color.kGreen);
     }
 
-    public void setDisabledMode() {
+    public final void setDisabledMode() {
         if (DriverStation.getAlliance().isPresent()) {
             Color allianceColor = DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 
                 Color.kRed : Color.kBlue;
