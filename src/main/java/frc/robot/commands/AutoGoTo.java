@@ -70,7 +70,15 @@ public class AutoGoTo extends Command {
         }
         
         config();
-        SmartDashboard.putNumber("R KP", 0.2);
+        //==============================================================
+        //!              For Tuning / Disable Later                    
+        //==============================================================
+
+        SmartDashboard.putNumber("KP", Constants.PID.translationalKP);
+        SmartDashboard.putNumber("KI", Constants.PID.translationalKI);
+        SmartDashboard.putNumber("KD", Constants.PID.translationalKD);
+        SmartDashboard.putNumber("IZone", Constants.PID.thanslationalIZone);
+        SmartDashboard.putNumber("R KP", rotationalKP);
     }
 
     @Override
@@ -80,19 +88,7 @@ public class AutoGoTo extends Command {
         if (closestTagId != -1) {
             updateTargetPosition();
         }
-        rotationalKP = SmartDashboard.getNumber("R KP", rotationalKP);
-        
-        //==============================================================
-        //!              For Tuning / Disable Later                    
-        //==============================================================
-        SmartDashboard.putNumber("KP", Constants.PID.translationalKP);
-        SmartDashboard.putNumber("KI", Constants.PID.translationalKI);
-        SmartDashboard.putNumber("KD", Constants.PID.translationalKD);
-        SmartDashboard.putNumber("IZone", Constants.PID.thanslationalIZone);
-    }
 
-    @Override
-    public void execute() {
         //==============================================================
         //!              For Tuning / Disable Later                    
         //==============================================================
@@ -106,6 +102,11 @@ public class AutoGoTo extends Command {
         yPidController.setD(SmartDashboard.getNumber("KD", Constants.PID.translationalKD));
         yPidController.setIZone(SmartDashboard.getNumber("IZone", Constants.PID.thanslationalIZone));
 
+        yawPidController.setP(SmartDashboard.getNumber("R KP", rotationalKP));
+    }
+
+    @Override
+    public void execute() {
         yawPidController.setP(rotationalKP);
         if (closestTagId == -1) {
             findClosestAprilTag();
@@ -134,7 +135,6 @@ public class AutoGoTo extends Command {
     @Override
     public void end(boolean interrupted) {
         drivetrain.setControl(new SwerveRequest.SwerveDriveBrake());
-        // Add this to ensure we return to alliance color even if interrupted
         ledSubsystem.setTeleopMode();
     }
 
