@@ -70,7 +70,7 @@ public class AutoGoTo extends Command {
         }
         
         config();
-        SmartDashboard.putNumber("Rotations", 0.2);
+        SmartDashboard.putNumber("R KP", 0.2);
     }
 
     @Override
@@ -80,11 +80,32 @@ public class AutoGoTo extends Command {
         if (closestTagId != -1) {
             updateTargetPosition();
         }
-        rotationalKP = SmartDashboard.getNumber("Rotations", rotationalKP);
+        rotationalKP = SmartDashboard.getNumber("R KP", rotationalKP);
+        
+        //==============================================================
+        //!              For Tuning / Disable Later                    
+        //==============================================================
+        SmartDashboard.putNumber("KP", Constants.PID.translationalKP);
+        SmartDashboard.putNumber("KI", Constants.PID.translationalKI);
+        SmartDashboard.putNumber("KD", Constants.PID.translationalKD);
+        SmartDashboard.putNumber("IZone", Constants.PID.thanslationalIZone);
     }
 
     @Override
     public void execute() {
+        //==============================================================
+        //!              For Tuning / Disable Later                    
+        //==============================================================
+        xPidController.setP(SmartDashboard.getNumber("KP", Constants.PID.translationalKP));
+        xPidController.setI(SmartDashboard.getNumber("KI", Constants.PID.translationalKI));
+        xPidController.setD(SmartDashboard.getNumber("KD", Constants.PID.translationalKD));
+        xPidController.setIZone(SmartDashboard.getNumber("IZone", Constants.PID.thanslationalIZone));
+
+        yPidController.setP(SmartDashboard.getNumber("KP", Constants.PID.translationalKP));
+        yPidController.setI(SmartDashboard.getNumber("KI", Constants.PID.translationalKI));
+        yPidController.setD(SmartDashboard.getNumber("KD", Constants.PID.translationalKD));
+        yPidController.setIZone(SmartDashboard.getNumber("IZone", Constants.PID.thanslationalIZone));
+
         yawPidController.setP(rotationalKP);
         if (closestTagId == -1) {
             findClosestAprilTag();
@@ -101,6 +122,13 @@ public class AutoGoTo extends Command {
                 .withVelocityY(yPidController.calculate(currentPose.getY()) * maxSpeed)
                 .withRotationalRate(yawPidController.calculate(currentPose.getRotation().getDegrees()))
         );
+
+        //==============================================================
+        //!              For Tuning / Disable Later                    
+        //==============================================================
+        SmartDashboard.putNumber("X Error", targetX - currentPose.getX());
+        SmartDashboard.putNumber("Y Error", targetY - currentPose.getY());
+        SmartDashboard.putNumber("Yaw Error", targetYaw - currentPose.getRotation().getDegrees());
     }
 
     @Override
