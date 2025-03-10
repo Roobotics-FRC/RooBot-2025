@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.394220890410959,
-        "y": 2.635124143835617
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.31100266774163,
-        "y": 2.1403500157926034
+        "x": 6.494808956550896,
+        "y": 4.710634485421448
       },
       "isLocked": false,
-      "linkedName": "Rief 1 Score"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.2321061643835618,
-        "y": 0.937221746575342
+        "x": 6.400941780821918,
+        "y": 4.7687714041095886
       },
       "prevControl": {
-        "x": 2.9254814467761876,
-        "y": 1.6495667581554452
+        "x": 3.8992206471414743,
+        "y": 6.023201334551535
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Feeder R"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "R3 Piece",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

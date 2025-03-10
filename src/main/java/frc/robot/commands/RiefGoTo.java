@@ -18,7 +18,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
 
-public class AutoGoTo extends Command {
+public class RiefGoTo extends Command {
     private final CommandSwerveDrivetrain drivetrain;
     private final FieldCentric drive;
     private final LEDSubsystem ledSubsystem;
@@ -29,8 +29,6 @@ public class AutoGoTo extends Command {
     private double targetX;
     private double targetY;
     private double targetYaw;
-
-    double rotationalKP;
 
     private AprilTagFieldLayout fieldLayout;
     private int closestTagId = -1;
@@ -43,7 +41,7 @@ public class AutoGoTo extends Command {
     
     private final PIDController xPidController = new PIDController(Constants.PID.translationalKP, Constants.PID.translationalKI, Constants.PID.translationalKD);
     private final PIDController yPidController = new PIDController(Constants.PID.translationalKP, Constants.PID.translationalKI, Constants.PID.translationalKD);
-    private final PIDController yawPidController = new PIDController(0.2, Constants.PID.rotationalKI, Constants.PID.rotationalKD);
+    private final PIDController yawPidController = new PIDController(Constants.PID.rotationalKP, Constants.PID.rotationalKI, Constants.PID.rotationalKD);
 
     /**
      * Creates a new AutoGoTo command that goes to the closest valid AprilTag
@@ -53,7 +51,7 @@ public class AutoGoTo extends Command {
      * @param relativeY Distance to maintain in Y direction relative to the tag in meters
      * @param superstructureSubsystem The superstructure subsystem for LEDs
      */
-    public AutoGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, double relativeX, double relativeY, LEDSubsystem ledSubsystem) {
+    public RiefGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, double relativeX, double relativeY, LEDSubsystem ledSubsystem) {
         this.drivetrain = drivetrain;
         this.maxSpeed = maxSpeed;
         this.relativeX = relativeX;
@@ -70,6 +68,7 @@ public class AutoGoTo extends Command {
         }
         
         config();
+
         //==============================================================
         //!              For Tuning / Disable Later                    
         //==============================================================
@@ -78,7 +77,7 @@ public class AutoGoTo extends Command {
         SmartDashboard.putNumber("KI", Constants.PID.translationalKI);
         SmartDashboard.putNumber("KD", Constants.PID.translationalKD);
         SmartDashboard.putNumber("IZone", Constants.PID.thanslationalIZone);
-        SmartDashboard.putNumber("R KP", rotationalKP);
+        SmartDashboard.putNumber("R KP", Constants.PID.rotationalKP);
     }
 
     @Override
@@ -102,12 +101,11 @@ public class AutoGoTo extends Command {
         yPidController.setD(SmartDashboard.getNumber("KD", Constants.PID.translationalKD));
         yPidController.setIZone(SmartDashboard.getNumber("IZone", Constants.PID.thanslationalIZone));
 
-        yawPidController.setP(SmartDashboard.getNumber("R KP", rotationalKP));
+        yawPidController.setP(SmartDashboard.getNumber("R KP", Constants.PID.rotationalKP));
     }
 
     @Override
     public void execute() {
-        yawPidController.setP(rotationalKP);
         if (closestTagId == -1) {
             findClosestAprilTag();
             if (closestTagId != -1) {

@@ -27,7 +27,7 @@ public class Constants {
         public static final double translationalKD = 0.02;
         public static final double thanslationalIZone = 0.5;
 
-        public static final double rotationalKP = 0.02;
+        public static final double rotationalKP = 0.2;
         public static final double rotationalKI = 0;
         public static final double rotationalKD = 0;
         public static final double rotationalIZone = 0;
@@ -38,6 +38,9 @@ public class Constants {
 
     public static final class Offsets{
         public static final double xRief = -0.4;
-        public static final double yRief = 0.25;
+        public static final double yRiefL = 0.25;
+        public static final double yRiefR = -0.135;
+        public static final double xFeeder = 0;
+        public static final double yFeeder = 0;
     }
 }

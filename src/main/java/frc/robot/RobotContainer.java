@@ -28,11 +28,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.Positions;
 import frc.robot.Constants.WaitTimes;
-import frc.robot.commands.AutoGoTo;
 import frc.robot.commands.DeAlgee;
 import frc.robot.commands.MoveElevator;
 import frc.robot.commands.MoveHoper;
 import frc.robot.commands.OutTake;
+import frc.robot.commands.RiefGoTo;
 import frc.robot.commands.led.LEDCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -120,24 +120,25 @@ public class RobotContainer {
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
         .andThen(ledCommands.teleop());
     
-    Command GoToR = ledCommands.alignment()
-        .andThen(new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, -0.135, ledSubsystem))
+    Command GoToRiefR = ledCommands.alignment()
+        .andThen(new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRiefR, ledSubsystem))
         .andThen(ledCommands.teleop());
 
-    Command GoToL = ledCommands.alignment()
-        .andThen(new AutoGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRief, ledSubsystem))
+    Command GoToRiefL = ledCommands.alignment()
+        .andThen(new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRiefL, ledSubsystem))
         .andThen(ledCommands.teleop());
+
 
     public RobotContainer() {
         //! Register the autonomous commands in here
-        NamedCommands.registerCommand("GoToL",  GoToL);
-        NamedCommands.registerCommand("GoToR",  GoToR);
+        NamedCommands.registerCommand("GoTo Rief L",  GoToRiefL);
+        NamedCommands.registerCommand("GoTo Rief R",  GoToRiefR);
         NamedCommands.registerCommand("L3 Score", L3Score);
         NamedCommands.registerCommand("L2 Score", L2Score);
         NamedCommands.registerCommand("L4 Score", L4Score);
         NamedCommands.registerCommand("L2 DeAlgee", L2DeAlgee);
         NamedCommands.registerCommand("L3 DeAlgee", L3DeAlgee);
-        NamedCommands.registerCommand("HopperUp", HopperUp);
+        NamedCommands.registerCommand("Hopper Up", HopperUp);
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -177,8 +178,8 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        joystick.x().whileTrue(GoToL);
-        joystick.b().whileTrue(GoToR);
+        joystick.x().whileTrue(GoToRiefL);
+        joystick.b().whileTrue(GoToRiefR);
 
         new JoystickButton(op_joystick, 5).onTrue(L2Score);
         new JoystickButton(op_joystick, 6).onTrue(L3Score);

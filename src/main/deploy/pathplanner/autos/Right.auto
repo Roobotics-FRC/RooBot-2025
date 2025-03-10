@@ -13,19 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "GoToR"
+            "name": "GoTo Rief L"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L2 Score"
+            "name": "L4 Score"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "HopperUp"
+            "name": "Hopper Up"
           }
         },
         {
@@ -49,19 +49,49 @@
         {
           "type": "named",
           "data": {
-            "name": "GoToR"
+            "name": "GoTo Rief R"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "GoToR"
+            "name": "L4 Score"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "HopperUp"
+            "name": "Hopper Up"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Rief To Feeder R 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Feeder To Rief R"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GoTo Rief L"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Hopper Up"
           }
         },
         {
@@ -73,7 +103,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

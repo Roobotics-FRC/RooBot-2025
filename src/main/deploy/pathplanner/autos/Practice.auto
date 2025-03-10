@@ -13,13 +13,19 @@
         {
           "type": "named",
           "data": {
-            "name": "GoTo"
+            "name": "GoTo Rief R"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L3 Score"
+            "name": "L4 Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Hopper Up"
           }
         },
         {
@@ -31,7 +37,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 1.0
           }
         },
         {
@@ -43,13 +49,19 @@
         {
           "type": "named",
           "data": {
-            "name": "GoTo"
+            "name": "GoTo Rief L"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L2 Score"
+            "name": "L4 Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Hopper Up"
           }
         },
         {
