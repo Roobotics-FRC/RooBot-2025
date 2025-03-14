@@ -7,14 +7,16 @@ public class DeAlgee extends Command{
     SuperstructureSubsystem superstructureSubsystem;
     double StPose;
 
-    public DeAlgee(SuperstructureSubsystem m_SuperstructureSubsystem, double StPose) {
-        this.superstructureSubsystem = m_SuperstructureSubsystem;
+    public DeAlgee(SuperstructureSubsystem superstructureSubsystem, double StPose) {
+        this.superstructureSubsystem = superstructureSubsystem;
         this.StPose = StPose;
+
+        addRequirements(superstructureSubsystem);
     }
 
     @Override
     public void initialize() {
-        superstructureSubsystem.setElevatorSpeed(1);
+        superstructureSubsystem.setElevatorSpeed(1.5);
         superstructureSubsystem.de_algeefy();
     }
 

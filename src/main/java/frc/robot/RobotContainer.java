@@ -42,7 +42,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.2).withRotationalDeadband(MaxAngularRate * 0.2) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) //!! 20% For school controller || 10% For My Controller
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -68,8 +68,6 @@ public class RobotContainer {
     Command ElevatorDown = new MoveElevator(m_SuperstructureSubsystem, Positions.L0,false);
     Command HopperDown = new MoveHoper(m_SuperstructureSubsystem, -3);
     Command HopperUp = new MoveHoper(m_SuperstructureSubsystem, 1);
-    Command ClimbDown = new InstantCommand(() -> m_SuperstructureSubsystem.climbDown());
-    Command ClimbUp = new InstantCommand(() -> m_SuperstructureSubsystem.climbUp(120));
 
     Command L2DeAlgee = ledCommands.intaking()
         .andThen(new MoveHoper(m_SuperstructureSubsystem, -3))
@@ -105,8 +103,6 @@ public class RobotContainer {
         .andThen(new MoveHoper(m_SuperstructureSubsystem, -2.5))
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L4, false))
         .andThen(new OutTake(m_SuperstructureSubsystem, false))
-        .andThen(new WaitCommand(WaitTimes.scoreWait))
-        // .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L4E, true))
         .andThen(new WaitCommand(WaitTimes.scoreWait))
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
         .andThen(ledCommands.teleop());
@@ -144,8 +140,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed * 0.5) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed * 0.5) // Drive left with negative X (left)
+                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
@@ -174,13 +170,21 @@ public class RobotContainer {
         joystick.a().whileTrue(new RiefGoTo(drivetrain, MaxSpeed, -1, 0, ledSubsystem));
         joystick.rightBumper().whileTrue(new FeederGoTo(drivetrain, MaxSpeed));
 
+        //Left Side Front
         new JoystickButton(op_joystick, 5).onTrue(L2Score);
         new JoystickButton(op_joystick, 6).onTrue(L3Score);
         new JoystickButton(op_joystick, 7).onTrue(L4Score);
-        new JoystickButton(op_joystick, 8).whileTrue(new OutTake(m_SuperstructureSubsystem,true));
-        // new JoystickButton(op_joystick, 10).onTrue(ElevatorDown);
-        new JoystickButton(op_joystick, 11).whileTrue(L2DeAlgee);
-        new JoystickButton(op_joystick, 12).whileTrue(L3DeAlgee);
+        //Left Side Back
+        new JoystickButton(op_joystick, 8).whileTrue(L3DeAlgee);
+        new JoystickButton(op_joystick, 9).whileTrue(L2DeAlgee);
+        new JoystickButton(op_joystick, 10).onTrue(ElevatorDown);
+
+        //Right Side Front
+        new JoystickButton(op_joystick, 11).whileTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(1))); //Climb
+        new JoystickButton(op_joystick, 12).whileTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(1))); //Middle
+        new JoystickButton(op_joystick, 13).onTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(1))); //Out
+
+        //Right Side Back
         new JoystickButton(op_joystick, 14).onTrue(HopperDown);
         new JoystickButton(op_joystick, 15).onTrue(HopperUp);
     }

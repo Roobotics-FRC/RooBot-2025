@@ -52,7 +52,7 @@ public class SuperstructureSubsystem extends SubsystemBase {
         elevatorConfig.Slot0.kP = ElevatorP;
         elevatorConfig.Slot0.kI = ElevatorI;
         elevatorConfig.Slot0.kD = ElevatorD;
-        elevatorConfig.CurrentLimits.SupplyCurrentLimit = 10;
+        elevatorConfig.CurrentLimits.SupplyCurrentLimit = 12;
         elevatorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         elevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         
@@ -103,11 +103,7 @@ public class SuperstructureSubsystem extends SubsystemBase {
         hoper.getClosedLoopController().setReference(poseition,ControlType.kPosition, ClosedLoopSlot.kSlot0);
     }
 
-    public void climbDown(){
-        ClimbMotor.setControl(new PositionVoltage(0));
-    }
-
-    public void climbUp(int position){
+    public void moveClimb(double position){
         ClimbMotor.setControl(new PositionVoltage(position));
     }
 
