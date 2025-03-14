@@ -294,7 +294,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             if (limelightMeasurement != null && limelightMeasurement.pose != null) {
                 if (limelightMeasurement.pose.getX() != 0) {
                     Pose2d adjustedPose = new Pose2d(
-                        limelightMeasurement.pose.getX() + 0.43,
+                        limelightMeasurement.pose.getX(),
                         limelightMeasurement.pose.getY(),
                         limelightMeasurement.pose.getRotation()
                     );

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Barge To Rief R"
+            "pathName": "Barge To Rief 22"
           }
         },
         {
@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Rief To Feed R"
+            "pathName": "Rief 22 To R Feed"
           }
         },
         {
@@ -43,37 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Feeder To Rief R"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "GoTo Rief R"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4 Score"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Hopper Up"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Rief To Feeder R 2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Feeder To Rief R"
+            "pathName": "R Feeder To 21 Rief"
           }
         },
         {
@@ -97,7 +67,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Rief To Feeder R 2"
+            "pathName": "Rief 21 To Feeder R"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "R Feeder To 18 Rief"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GoTo Rief L"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Hopper Up"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Rief 18 To R Feeder"
           }
         }
       ]

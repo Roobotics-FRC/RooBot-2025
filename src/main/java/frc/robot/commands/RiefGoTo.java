@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
 
@@ -82,6 +83,8 @@ public class RiefGoTo extends Command {
 
     @Override
     public void initialize() {
+        LimelightHelpers.setLEDMode_ForceOn("limelight");
+
         resetPID();
         findClosestAprilTag();
         if (closestTagId != -1) {
@@ -133,7 +136,10 @@ public class RiefGoTo extends Command {
     @Override
     public void end(boolean interrupted) {
         drivetrain.setControl(new SwerveRequest.SwerveDriveBrake());
-        ledSubsystem.setTeleopMode();
+        if (!DriverStation.isAutonomous()) {
+            ledSubsystem.setTeleopMode();
+        }
+        LimelightHelpers.setLEDMode_ForceOff("limelight");
     }
 
     @Override
@@ -150,10 +156,15 @@ public class RiefGoTo extends Command {
     private void config() {
         xPidController.setIZone(Constants.PID.thanslationalIZone);
         yPidController.setIZone(Constants.PID.thanslationalIZone);
-
-        xPidController.setTolerance(Constants.PID.translationalTolerance);
-        yPidController.setTolerance(Constants.PID.translationalTolerance);
-        yawPidController.setTolerance(Constants.PID.rotationalTolerance);
+        if (!DriverStation.isAutonomous()) {
+            xPidController.setTolerance(Constants.PID.translationalTolerance);
+            yPidController.setTolerance(Constants.PID.translationalTolerance);
+            yawPidController.setTolerance(Constants.PID.rotationalTolerance);
+        } else {
+            xPidController.setTolerance(Constants.PID.translationalTolerance+0.07);
+            yPidController.setTolerance(Constants.PID.translationalTolerance+0.06);
+            yawPidController.setTolerance(Constants.PID.rotationalTolerance+1);
+        }
         yawPidController.enableContinuousInput(-180, 180);
     }
 

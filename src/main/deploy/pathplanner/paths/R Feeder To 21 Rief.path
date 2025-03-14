@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.81652397260274,
-        "y": 5.159439212328767
+        "x": 1.2321061643835618,
+        "y": 0.937221746575342
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.975085616438357,
-        "y": 5.880672089041096
+        "x": 2.2808674069967063,
+        "y": 1.627226661597245
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Feeder R"
     },
     {
       "anchor": {
-        "x": 1.3072345890410957,
-        "y": 7.022624143835617
+        "x": 3.5460616438356163,
+        "y": 2.575021404109589
       },
       "prevControl": {
-        "x": 1.938313356164383,
-        "y": 6.6319563356164375
+        "x": 2.5122630843279357,
+        "y": 1.8894166609147387
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Rief 21"
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -56.30993247402025
+    "velocity": 0.3,
+    "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": -59.99999999999999
+    "velocity": 0.3,
+    "rotation": 55.0
   },
   "useDefaultConstraints": true
 }

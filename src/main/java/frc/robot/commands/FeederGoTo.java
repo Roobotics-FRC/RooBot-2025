@@ -15,12 +15,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.LEDSubsystem;
 
 public class FeederGoTo extends Command {
     private final CommandSwerveDrivetrain drivetrain;
     private final FieldCentric drive;
-    private final LEDSubsystem ledSubsystem;
     private final double maxSpeed;
     private final double relativeX = Constants.Offsets.xFeeder;
     private final double relativeY = Constants.Offsets.yFeeder; 
@@ -47,10 +45,9 @@ public class FeederGoTo extends Command {
      * @param maxSpeed Maximum speed for movement
      * @param superstructureSubsystem The superstructure subsystem for LEDs
      */
-    public FeederGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, LEDSubsystem ledSubsystem) {
+    public FeederGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed) {
         this.drivetrain = drivetrain;
         this.maxSpeed = maxSpeed;
-        this.ledSubsystem = ledSubsystem;
         this.drive = new SwerveRequest.FieldCentric();
         
         addRequirements(drivetrain);
@@ -95,7 +92,6 @@ public class FeederGoTo extends Command {
     @Override
     public void end(boolean interrupted) {
         drivetrain.setControl(new SwerveRequest.SwerveDriveBrake());
-        ledSubsystem.setTeleopMode();
     }
 
     @Override
@@ -127,8 +123,7 @@ public class FeederGoTo extends Command {
         
         double closestDistance = Double.MAX_VALUE;
         int closestId = -1;
-
-        // Find the closest valid AprilTag
+        
         for (var tagPose : fieldLayout.getTags()) {
             if (!VALID_TAG_IDS.contains(tagPose.ID)) continue;
 
@@ -160,7 +155,7 @@ public class FeederGoTo extends Command {
 
         targetX = tagPose.getX() - dx;
         targetY = tagPose.getY() - dy;
-        targetYaw = tagRotationDegrees + (tagRotationDegrees > 0 ? -180 : 180);
+        targetYaw = tagRotationDegrees;
 
         setSetpoint(targetX, targetY, targetYaw);
     }
