@@ -4,16 +4,25 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.simple.parser.ParseException;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.controller.PIDController;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -48,6 +57,13 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
+
+    private static final double ROBOT_WIDTH = 0.6; // meters
+    private static final double ROBOT_LENGTH = 0.6; // meters
+    
+    private final Field2d field2d = new Field2d();
+    private PathPlannerAuto currentAuto = null;
+    private final List<String> activeTrajectories = new ArrayList<>();
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
@@ -126,12 +142,61 @@ public class RobotContainer {
         NamedCommands.registerCommand("L2 DeAlgee", L2DeAlgee);
         NamedCommands.registerCommand("L3 DeAlgee", L3DeAlgee);
         NamedCommands.registerCommand("Hopper Up", HopperUp);
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        autoChooser = AutoBuilder.buildAutoChooser("None");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
 
         yawPidController.enableContinuousInput(-180, 180);
+
+        SmartDashboard.putData("Field", field2d);
+        
+        // Improved auto chooser listener
+        autoChooser.onChange((command) -> {
+            clearTrajectories();
+            if (command instanceof PathPlannerAuto pathPlannerAuto) {
+                currentAuto = pathPlannerAuto;
+                try {
+                    visualizeAuto(currentAuto);
+                } catch (Exception e) {
+                    System.err.println("Error visualizing auto: " + e.getMessage());
+                }
+            }
+        });
+    }
+    
+    private void clearTrajectories() {
+        // Clear all existing trajectories
+        activeTrajectories.forEach(name -> field2d.getObject(name).setPoses());
+        activeTrajectories.clear();
+    }
+    
+    private void visualizeAuto(PathPlannerAuto auto) throws ParseException {
+        if (auto == null) return;
+        
+        try {
+            var paths = PathPlannerAuto.getPathGroupFromAutoFile(auto.getName());
+            if (paths == null || paths.isEmpty()) return;
+
+            // Show starting pose
+            var startingPose = paths.get(0).getStartingHolonomicPose();
+            startingPose.ifPresent(pose -> field2d.getObject("startingPose").setPose(pose));
+            
+            // Show each path
+            for (int i = 0; i < paths.size(); i++) {
+                String trajectoryName = "trajectory" + (i == 0 ? "" : i);
+                activeTrajectories.add(trajectoryName);
+                
+                // Set trajectory poses
+                var trajectoryObject = field2d.getObject(trajectoryName);
+                trajectoryObject.setPoses(paths.get(i).getPathPoses());
+                
+                // Note: Ally paths are not supported in the current PathPlanner version
+            }
+            
+        } catch (IOException e) {
+            System.err.println("Error loading auto file: " + e.getMessage());
+        }
     }
 
     private void configureBindings() {
@@ -211,6 +276,19 @@ public class RobotContainer {
 
     public void robotInit(){
         ledCommands.disabled().schedule();
+    }
+    
+    public void periodic() {
+        // Update robot pose and orientation
+        var robotPose = drivetrain.getState().Pose;
+        field2d.setRobotPose(robotPose);
+        
+        // Update starting pose visibility based on game state
+        var startingPoseObject = field2d.getObject("startingPose");
+        if (!DriverStation.isDisabled()) {
+            // Hide starting pose during match
+            startingPoseObject.setPoses();
+        }
     }
 
     // public double getYaw() {

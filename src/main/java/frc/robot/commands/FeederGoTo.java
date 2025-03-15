@@ -53,7 +53,7 @@ public class FeederGoTo extends Command {
         addRequirements(drivetrain);
         
         try {
-            fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+            fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
         } catch (Exception e) {
             DriverStation.reportError("Failed to load AprilTag field layout", e.getStackTrace());
         }
