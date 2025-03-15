@@ -21,11 +21,12 @@ public class SuperstructureSubsystem extends SubsystemBase {
 
     private final TalonFX ClimbMotor = new TalonFX(23);
 
-    private final double ClimbP = 1;
+    private final double ClimbP = 0.3;
 
     private final double ElevatorP = 1;
     private final double ElevatorI = 0;
     private final double ElevatorD = 0;
+    private double ClimbPosition = 0;
 
     public double position;
 
@@ -87,7 +88,7 @@ public class SuperstructureSubsystem extends SubsystemBase {
     }
 
     public void outTake(){
-        intakeMotor.set(-1);
+        intakeMotor.set(-0.8);
     }
 
     public void stopMotors(){
@@ -104,7 +105,7 @@ public class SuperstructureSubsystem extends SubsystemBase {
     }
 
     public void moveClimb(double position){
-        ClimbMotor.setControl(new PositionVoltage(position));
+        ClimbMotor.setControl(new VoltageOut(position));
     }
 
     @Override

@@ -118,11 +118,22 @@ public class RiefGoTo extends Command {
 
         Pose2d currentPose = drivetrain.getState().Pose;
 
-        drivetrain.setControl(
-            drive.withVelocityX(xPidController.calculate(currentPose.getX()) * maxSpeed)
-                .withVelocityY(yPidController.calculate(currentPose.getY()) * maxSpeed)
-                .withRotationalRate(yawPidController.calculate(currentPose.getRotation().getDegrees()))
-        );
+
+        DriverStation.getAlliance().ifPresent(allianceColor -> {
+            if (allianceColor == DriverStation.Alliance.Red) {
+                drivetrain.setControl(
+                    drive.withVelocityX(xPidController.calculate(currentPose.getX()) * -maxSpeed)
+                        .withVelocityY(yPidController.calculate(currentPose.getY()) * -maxSpeed)
+                        .withRotationalRate(yawPidController.calculate(currentPose.getRotation().getDegrees()))
+                );
+            } else {
+                drivetrain.setControl(
+                    drive.withVelocityX(xPidController.calculate(currentPose.getX()) * maxSpeed)
+                        .withVelocityY(yPidController.calculate(currentPose.getY()) * maxSpeed)
+                        .withRotationalRate(yawPidController.calculate(currentPose.getRotation().getDegrees()))
+                );
+            }
+        });
 
         // //==============================================================
         // //!              For Tuning / Disable Later                    
@@ -160,8 +171,8 @@ public class RiefGoTo extends Command {
             yPidController.setTolerance(Constants.PID.translationalTolerance);
             yawPidController.setTolerance(Constants.PID.rotationalTolerance);
         } else {
-            xPidController.setTolerance(Constants.PID.translationalTolerance+0.07);
-            yPidController.setTolerance(Constants.PID.translationalTolerance+0.06);
+            xPidController.setTolerance(Constants.PID.translationalTolerance+0.09);
+            yPidController.setTolerance(Constants.PID.translationalTolerance+0.07);
             yawPidController.setTolerance(Constants.PID.rotationalTolerance+1);
         }
         yawPidController.enableContinuousInput(-180, 180);

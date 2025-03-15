@@ -82,11 +82,21 @@ public class FeederGoTo extends Command {
 
         Pose2d currentPose = drivetrain.getState().Pose;
 
-        drivetrain.setControl(
-            drive.withVelocityX(xPidController.calculate(currentPose.getX()) * maxSpeed)
-                .withVelocityY(yPidController.calculate(currentPose.getY()) * maxSpeed)
-                .withRotationalRate(yawPidController.calculate(currentPose.getRotation().getDegrees()))
-        );
+        DriverStation.getAlliance().ifPresent(allianceColor -> {
+            if (allianceColor == DriverStation.Alliance.Red) {
+                drivetrain.setControl(
+                    drive.withVelocityX(xPidController.calculate(currentPose.getX()) * -maxSpeed)
+                        .withVelocityY(yPidController.calculate(currentPose.getY()) * -maxSpeed)
+                        .withRotationalRate(yawPidController.calculate(currentPose.getRotation().getDegrees()))
+                );
+            } else {
+                drivetrain.setControl(
+                    drive.withVelocityX(xPidController.calculate(currentPose.getX()) * maxSpeed)
+                        .withVelocityY(yPidController.calculate(currentPose.getY()) * maxSpeed)
+                        .withRotationalRate(yawPidController.calculate(currentPose.getRotation().getDegrees()))
+                );
+            }
+        });
     }
 
     @Override

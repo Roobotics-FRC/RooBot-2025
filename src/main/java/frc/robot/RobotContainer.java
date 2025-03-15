@@ -169,6 +169,7 @@ public class RobotContainer {
         joystick.b().whileTrue(GoToRiefR);
         joystick.a().whileTrue(new RiefGoTo(drivetrain, MaxSpeed, -1, 0, ledSubsystem));
         joystick.rightBumper().whileTrue(new FeederGoTo(drivetrain, MaxSpeed));
+        joystick.leftBumper().whileTrue(new FeederGoTo(drivetrain, MaxSpeed));
 
         //Left Side Front
         new JoystickButton(op_joystick, 5).onTrue(L2Score);
@@ -180,9 +181,9 @@ public class RobotContainer {
         new JoystickButton(op_joystick, 10).onTrue(ElevatorDown);
 
         //Right Side Front
-        new JoystickButton(op_joystick, 11).whileTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(1))); //Climb
-        new JoystickButton(op_joystick, 12).whileTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(1))); //Middle
-        new JoystickButton(op_joystick, 13).onTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(1))); //Out
+        new JoystickButton(op_joystick, 11).whileTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(-5)));
+        new JoystickButton(op_joystick, 12).whileTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(0)));//Middle
+        new JoystickButton(op_joystick, 13).onTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(5)));
 
         //Right Side Back
         new JoystickButton(op_joystick, 14).onTrue(HopperDown);
