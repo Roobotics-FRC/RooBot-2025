@@ -26,13 +26,13 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.Positions;
 import frc.robot.Constants.WaitTimes;
+import frc.robot.commands.Climb;
 import frc.robot.commands.DeAlgee;
 import frc.robot.commands.FeederGoTo;
 import frc.robot.commands.MoveElevator;
@@ -246,9 +246,9 @@ public class RobotContainer {
         new JoystickButton(op_joystick, 10).onTrue(ElevatorDown);
 
         //Right Side Front
-        new JoystickButton(op_joystick, 11).whileTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(-5)));
-        new JoystickButton(op_joystick, 12).whileTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(0)));//Middle
-        new JoystickButton(op_joystick, 13).onTrue(new InstantCommand(() -> m_SuperstructureSubsystem.moveClimb(5)));
+        new JoystickButton(op_joystick, 11).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).andThen(new Climb(m_SuperstructureSubsystem, -5)));
+        new JoystickButton(op_joystick, 12).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).andThen(new Climb(m_SuperstructureSubsystem, -3)));
+        new JoystickButton(op_joystick, 13).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).andThen(new Climb(m_SuperstructureSubsystem, 5)));
 
         //Right Side Back
         new JoystickButton(op_joystick, 14).onTrue(HopperDown);
