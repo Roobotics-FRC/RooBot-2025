@@ -116,12 +116,25 @@ public class RobotContainer {
         .andThen(ledCommands.teleop());
 
     Command L4Score = ledCommands.readyToScore()
-        .andThen(new MoveHoper(m_SuperstructureSubsystem, -2.5))
+        .andThen(new MoveHoper(m_SuperstructureSubsystem, -3))
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L4, false))
         .andThen(new OutTake(m_SuperstructureSubsystem, false))
         .andThen(new WaitCommand(WaitTimes.scoreWait))
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
         .andThen(ledCommands.teleop());
+
+    Command L2Elevator = new MoveHoper(m_SuperstructureSubsystem, -3)
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L2, false));
+
+    Command L3Elevator = new MoveHoper(m_SuperstructureSubsystem, -3)
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false));
+    
+    Command L4Elevator = new MoveHoper(m_SuperstructureSubsystem, -3)
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L4, false));
+
+    Command OutTake = new OutTake(m_SuperstructureSubsystem, false)
+        .andThen(new WaitCommand(WaitTimes.scoreWait))
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false));
     
     Command GoToRiefR = ledCommands.alignment()
         .andThen(new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRiefR, ledSubsystem))
@@ -134,6 +147,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         //! Register the autonomous commands in here
+        NamedCommands.registerCommand("Pre Raise", new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false));
         NamedCommands.registerCommand("GoTo Rief L",  GoToRiefL);
         NamedCommands.registerCommand("GoTo Rief R",  GoToRiefR);
         NamedCommands.registerCommand("L3 Score", L3Score);
@@ -225,8 +239,10 @@ public class RobotContainer {
         joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // reset the field-centric heading on left bumper press
-        joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        //! Reset North
+        // // reset the field-centric heading on left bumper press
+        new JoystickButton(op_joystick, 2).onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        // joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
@@ -237,9 +253,15 @@ public class RobotContainer {
         joystick.leftBumper().whileTrue(new FeederGoTo(drivetrain, MaxSpeed));
 
         //Left Side Front
-        new JoystickButton(op_joystick, 5).onTrue(L2Score);
-        new JoystickButton(op_joystick, 6).onTrue(L3Score);
-        new JoystickButton(op_joystick, 7).onTrue(L4Score);
+        new JoystickButton(op_joystick, 5).onTrue(L2Elevator);
+        new JoystickButton(op_joystick, 5).onFalse(OutTake);
+
+        new JoystickButton(op_joystick, 6).onTrue(L3Elevator);
+        new JoystickButton(op_joystick, 6).onFalse(OutTake);
+
+        new JoystickButton(op_joystick, 7).onTrue(L4Elevator);
+        new JoystickButton(op_joystick, 7).onFalse(OutTake);
+
         //Left Side Back
         new JoystickButton(op_joystick, 8).whileTrue(L3DeAlgee);
         new JoystickButton(op_joystick, 9).whileTrue(L2DeAlgee);
@@ -253,6 +275,24 @@ public class RobotContainer {
         //Right Side Back
         new JoystickButton(op_joystick, 14).onTrue(HopperDown);
         new JoystickButton(op_joystick, 15).onTrue(HopperUp);
+
+        // //Left Side Front
+        // new JoystickButton(op_joystick, 5).onTrue(L2Score);
+        // new JoystickButton(op_joystick, 6).onTrue(L3Score);
+        // new JoystickButton(op_joystick, 7).onTrue(L4Score);
+        // //Left Side Back
+        // new JoystickButton(op_joystick, 8).whileTrue(L3DeAlgee);
+        // new JoystickButton(op_joystick, 9).whileTrue(L2DeAlgee);
+        // new JoystickButton(op_joystick, 10).onTrue(ElevatorDown);
+
+        // //Right Side Front
+        // new JoystickButton(op_joystick, 11).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).andThen(new Climb(m_SuperstructureSubsystem, -5)));
+        // new JoystickButton(op_joystick, 12).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).andThen(new Climb(m_SuperstructureSubsystem, -3)));
+        // new JoystickButton(op_joystick, 13).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).andThen(new Climb(m_SuperstructureSubsystem, 5)));
+
+        // //Right Side Back
+        // new JoystickButton(op_joystick, 14).onTrue(HopperDown);
+        // new JoystickButton(op_joystick, 15).onTrue(HopperUp);
     }
 
     public Command getAutonomousCommand() {

@@ -15,9 +15,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "deadline",
                 "data": {
-                  "name": "GoTo Rief L"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoTo Rief L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Pre Raise"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -44,7 +57,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 0.5
           }
         },
         {
@@ -58,9 +71,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "deadline",
                 "data": {
-                  "name": "GoTo Rief L"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoTo Rief L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Pre Raise"
+                      }
+                    }
+                  ]
                 }
               },
               {

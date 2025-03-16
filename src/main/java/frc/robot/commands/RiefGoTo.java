@@ -171,8 +171,8 @@ public class RiefGoTo extends Command {
             yPidController.setTolerance(Constants.PID.translationalTolerance);
             yawPidController.setTolerance(Constants.PID.rotationalTolerance);
         } else {
-            xPidController.setTolerance(Constants.PID.translationalTolerance+0.09);
-            yPidController.setTolerance(Constants.PID.translationalTolerance+0.07);
+            xPidController.setTolerance(Constants.PID.translationalTolerance+0.1);
+            yPidController.setTolerance(Constants.PID.translationalTolerance+0.04);
             yawPidController.setTolerance(Constants.PID.rotationalTolerance+1);
         }
         yawPidController.enableContinuousInput(-180, 180);
