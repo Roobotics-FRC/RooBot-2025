@@ -15,22 +15,9 @@
           "data": {
             "commands": [
               {
-                "type": "deadline",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "GoTo Rief L"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Pre Raise"
-                      }
-                    }
-                  ]
+                  "name": "GoTo Rief L"
                 }
               },
               {

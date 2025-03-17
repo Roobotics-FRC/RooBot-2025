@@ -11,15 +11,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "GoTo Rief L"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "GoTo Rief L"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Elevator"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4 Score"
+            "name": "OutTake"
           }
         },
         {
@@ -37,7 +50,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {
@@ -47,15 +60,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "GoTo Rief L"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "GoTo Rief L"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Elevator"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L4 Score"
+            "name": "OutTake"
           }
         },
         {
@@ -71,21 +97,40 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "R Feeder To 18 Rief"
+            "pathName": "R Feeder To 21 Rief"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "GoTo Rief R"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Elevator"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "GoTo Rief L"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4 Score"
+            "name": "OutTake"
           }
         },
         {
@@ -97,7 +142,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Rief 18 To R Feeder"
+            "pathName": "Rief 21 To Feeder R"
           }
         }
       ]

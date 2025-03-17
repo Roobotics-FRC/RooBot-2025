@@ -156,6 +156,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("L2 DeAlgee", L2DeAlgee);
         NamedCommands.registerCommand("L3 DeAlgee", L3DeAlgee);
         NamedCommands.registerCommand("Hopper Up", HopperUp);
+        NamedCommands.registerCommand("L4Elevator", L4Elevator);
+        NamedCommands.registerCommand("OutTake", OutTake);
         autoChooser = AutoBuilder.buildAutoChooser("None");
         SmartDashboard.putData("Auto Mode", autoChooser);
 

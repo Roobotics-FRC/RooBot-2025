@@ -15,15 +15,28 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "deadline",
                 "data": {
-                  "name": "GoTo Rief L"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoTo Rief L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "L4Elevator"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L4 Score"
+                  "name": "OutTake"
                 }
               },
               {
@@ -58,15 +71,28 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "deadline",
                 "data": {
-                  "name": "GoTo Rief L"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoTo Rief L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "L4Elevator"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L4 Score"
+                  "name": "OutTake"
                 }
               },
               {
@@ -87,13 +113,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Feeder L To Rief 18"
+            "pathName": "Feeder L To Rief 19"
           }
         },
         {
@@ -101,15 +127,28 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "deadline",
                 "data": {
-                  "name": "GoTo Rief L"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoTo Rief R"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "L4Elevator"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L4 Score"
+                  "name": "OutTake"
                 }
               },
               {
@@ -124,7 +163,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Rief 18 To Feeder L"
+            "pathName": "Rief 19 To Feeder L"
           }
         }
       ]
