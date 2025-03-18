@@ -136,6 +136,9 @@ public class RobotContainer {
         .andThen(new WaitCommand(WaitTimes.scoreWait))
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false));
     
+    Command OutTakeAuto = new OutTake(m_SuperstructureSubsystem, false)
+        .andThen(new WaitCommand(WaitTimes.scoreWait));
+    
     Command GoToRiefR = ledCommands.alignment()
         .andThen(new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRiefR, ledSubsystem))
         .andThen(ledCommands.teleop());
@@ -158,6 +161,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("Hopper Up", HopperUp);
         NamedCommands.registerCommand("L4Elevator", L4Elevator);
         NamedCommands.registerCommand("OutTake", OutTake);
+        NamedCommands.registerCommand("OutTake W/O", OutTakeAuto);
+        NamedCommands.registerCommand("Elevator Down", new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false));
         autoChooser = AutoBuilder.buildAutoChooser("None");
         SmartDashboard.putData("Auto Mode", autoChooser);
 

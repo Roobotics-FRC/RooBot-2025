@@ -16,7 +16,7 @@ public class DeAlgee extends Command{
 
     @Override
     public void initialize() {
-        superstructureSubsystem.setElevatorSpeed(1.5);
+        superstructureSubsystem.setElevatorSpeed(2);
         superstructureSubsystem.de_algeefy();
     }
 

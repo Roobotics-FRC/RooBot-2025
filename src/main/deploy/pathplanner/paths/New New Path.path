@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.3072345890410957,
-        "y": 7.022624143835617
+        "x": 1.2027138157894735,
+        "y": 7.046217105263157
       },
       "prevControl": {
-        "x": 1.938313356164383,
-        "y": 6.6319563356164375
+        "x": 1.8337925829127606,
+        "y": 6.655549297043978
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Feeder L"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -56.30993247402025
+    "rotation": -55.0
   },
   "reversed": false,
   "folder": null,
