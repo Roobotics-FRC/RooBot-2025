@@ -78,7 +78,3 @@ This project is licensed under WPILib's BSD license. See the LICENSE file for de
 ## 🏆 Team
 
 Made with ❤️ by Team Roobotics - FRC Team [4373]
-
----
-
-For more information about our team and our robots, visit [Team Website URL]
