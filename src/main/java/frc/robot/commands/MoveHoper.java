@@ -15,6 +15,7 @@ public class MoveHoper extends Command{
     @Override
     public void initialize() {
         superstructureSubsystem.moveHoper(pose);
+        superstructureSubsystem.setIntakeSpeed(-0.6);
     }
 
     @Override
@@ -23,11 +24,11 @@ public class MoveHoper extends Command{
 
     @Override
     public boolean isFinished() {
-        return true;
+        return !superstructureSubsystem.PieceIn;
     }
 
     @Override
     public void end(boolean interrupted) {
+        superstructureSubsystem.setIntakeSpeed(0);
     }
-    
 }

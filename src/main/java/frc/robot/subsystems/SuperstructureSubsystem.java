@@ -10,7 +10,9 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SuperstructureSubsystem extends SubsystemBase {
@@ -26,8 +28,11 @@ public class SuperstructureSubsystem extends SubsystemBase {
     private final double ElevatorP = 1;
     private final double ElevatorI = 0;
     private final double ElevatorD = 0;
-    private double ClimbPosition = 0;
 
+    private final DigitalInput limitSwitch = new DigitalInput(1);
+
+    public boolean PieceIn = false;
+    
     public double position;
 
     private final SparkMax intakeMotor = new SparkMax(32, SparkMax.MotorType.kBrushless);
@@ -91,6 +96,10 @@ public class SuperstructureSubsystem extends SubsystemBase {
         intakeMotor.set(-0.8);
     }
 
+    public void setIntakeSpeed(double speed){
+        intakeMotor.set(speed);
+    }
+
     public void stopMotors(){
         intakeMotor.stopMotor();
         de_algee.stopMotor();
@@ -111,6 +120,13 @@ public class SuperstructureSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         getElevatorPosition();
+        PieceIn = limitSwitch.get();
+
+        SmartDashboard.putBoolean("Intake Piece In", PieceIn);
+
+        if(!PieceIn){
+            setIntakeSpeed(0);
+        }
 
         // double ID = LimelightHelpers.getFiducialID("limelight");
         // SmartDashboard.putNumber("ID", ID);
