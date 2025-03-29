@@ -25,6 +25,19 @@
                 "data": {
                   "name": "L4 Score"
                 }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Rief 22 To R Feed"
+                }
               },
               {
                 "type": "named",
@@ -33,18 +46,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Rief 22 To R Feed"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
           }
         },
         {
@@ -81,6 +82,19 @@
                 "data": {
                   "name": "L4 Score"
                 }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Rief 21 To Feeder R"
+                }
               },
               {
                 "type": "named",
@@ -89,12 +103,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Rief 21 To Feeder R"
           }
         }
       ]

@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -53,7 +54,7 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) //!! 20% For school controller || 10% For My Controller
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
+    private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric() 
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
@@ -139,20 +140,22 @@ public class RobotContainer {
     Command OutTakeAuto = new OutTake(m_SuperstructureSubsystem, false)
         .andThen(new WaitCommand(WaitTimes.scoreWait));
     
-    Command GoToRiefR = ledCommands.alignment()
-        .andThen(new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRiefR, ledSubsystem))
+    Command GoToRiefR = ledCommands.alignment() //! REMOVEEE
+        .andThen(new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief-0.02, Constants.Offsets.yRiefR, ledSubsystem))
         .andThen(ledCommands.teleop());
-
+    
     Command GoToRiefL = ledCommands.alignment()
         .andThen(new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRiefL, ledSubsystem))
         .andThen(ledCommands.teleop());
 
 
+
+
     public RobotContainer() {
         //! Register the autonomous commands in here
-        NamedCommands.registerCommand("Pre Raise", new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false));
-        NamedCommands.registerCommand("GoTo Rief L",  GoToRiefL);
-        NamedCommands.registerCommand("GoTo Rief R",  GoToRiefR);
+        NamedCommands.registerCommand("Pre Raise", new MoveHoper(m_SuperstructureSubsystem, -3).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L2, false)));
+        NamedCommands.registerCommand("GoTo Rief L",  new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief-0.08, Constants.Offsets.yRiefL, ledSubsystem));
+        NamedCommands.registerCommand("GoTo Rief R",  new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief-0.09, Constants.Offsets.yRiefR, ledSubsystem));
         NamedCommands.registerCommand("L3 Score", L3Score);
         NamedCommands.registerCommand("L2 Score", L2Score);
         NamedCommands.registerCommand("L4 Score", L4Score);
@@ -162,6 +165,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("L4Elevator", L4Elevator);
         NamedCommands.registerCommand("OutTake", OutTake);
         NamedCommands.registerCommand("OutTake W/O", OutTakeAuto);
+        NamedCommands.registerCommand("HoperUp W/O", new InstantCommand(() -> m_SuperstructureSubsystem.moveHoper(1)));
+        NamedCommands.registerCommand("FeederGoTo", new FeederGoTo(drivetrain, MaxSpeed));
         NamedCommands.registerCommand("Elevator Down", new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false));
         autoChooser = AutoBuilder.buildAutoChooser("None");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -275,9 +280,9 @@ public class RobotContainer {
         new JoystickButton(op_joystick, 10).onTrue(ElevatorDown);
 
         //Right Side Front
-        new JoystickButton(op_joystick, 11).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).andThen(new Climb(m_SuperstructureSubsystem, -5)));
-        new JoystickButton(op_joystick, 12).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).andThen(new Climb(m_SuperstructureSubsystem, -3)));
-        new JoystickButton(op_joystick, 13).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).andThen(new Climb(m_SuperstructureSubsystem, 5)));
+        new JoystickButton(op_joystick, 11).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).alongWith(new Climb(m_SuperstructureSubsystem, -8)));
+        new JoystickButton(op_joystick, 12).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).alongWith(new Climb(m_SuperstructureSubsystem, -3)));
+        new JoystickButton(op_joystick, 13).whileTrue(new MoveHoper(m_SuperstructureSubsystem, -3).alongWith(new Climb(m_SuperstructureSubsystem, 8)));
 
         //Right Side Back
         new JoystickButton(op_joystick, 14).onTrue(HopperDown);

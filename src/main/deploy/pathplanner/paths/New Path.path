@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.202713815789475,
-        "y": 7.046217105263157
+        "x": 2.3284539473684207,
+        "y": 6.7094572368421055
       },
       "isLocked": false,
       "linkedName": "Feeder L"
     },
     {
       "anchor": {
-        "x": 3.5610873287671234,
-        "y": 5.490004280821918
+        "x": 3.1270559210526314,
+        "y": 6.045559210526315
       },
       "prevControl": {
-        "x": 3.2305222602739727,
-        "y": 6.04595462328767
+        "x": 2.617105263157894,
+        "y": 6.449671052631579
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,7 +41,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.5,
+    "velocity": 1.2,
     "rotation": -59.99999999999999
   },
   "reversed": false,

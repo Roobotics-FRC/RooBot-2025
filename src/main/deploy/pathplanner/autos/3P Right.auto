@@ -5,144 +5,249 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Barge To Rief 22"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "deadline",
                 "data": {
-                  "name": "GoTo Rief L"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Barge To Rief 22"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Pre Raise"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoTo Rief L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "L4Elevator"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L4Elevator"
+                  "name": "OutTake W/O"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Rief 22 To R Feed"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator Down"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "HoperUp W/O"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Hopper Up"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "OutTake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Hopper Up"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Rief 22 To R Feed"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "R Feeder To 21 Rief"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "deadline",
                 "data": {
-                  "name": "GoTo Rief L"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "R Feeder To 21 Rief"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Pre Raise"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoTo Rief L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "L4Elevator"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L4Elevator"
+                  "name": "OutTake W/O"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Rief 21 To Feeder R"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator Down"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "HoperUp W/O"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Hopper Up"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "OutTake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Hopper Up"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Rief 21 To Feeder R"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "R Feeder To 21 Rief"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "deadline",
                 "data": {
-                  "name": "GoTo Rief R"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "R Feeder To 21 Rief"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Pre Raise"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoTo Rief R"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "L4Elevator"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L4Elevator"
+                  "name": "OutTake W/O"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Rief 21 To Feeder R"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator Down"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "HoperUp W/O"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Hopper Up"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "OutTake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Hopper Up"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Rief 21 To Feeder R"
           }
         }
       ]

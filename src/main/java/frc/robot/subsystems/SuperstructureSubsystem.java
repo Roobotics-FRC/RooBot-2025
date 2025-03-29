@@ -60,7 +60,7 @@ public class SuperstructureSubsystem extends SubsystemBase {
         elevatorConfig.Slot0.kD = ElevatorD;
         elevatorConfig.CurrentLimits.SupplyCurrentLimit = 12;
         elevatorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        elevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        elevatorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         
         feedbackConfigs.RotorToSensorRatio = 1;
 
@@ -121,12 +121,8 @@ public class SuperstructureSubsystem extends SubsystemBase {
     public void periodic() {
         getElevatorPosition();
         PieceIn = limitSwitch.get();
-
-        SmartDashboard.putBoolean("Intake Piece In", PieceIn);
-
-        if(!PieceIn){
-            setIntakeSpeed(0);
-        }
+        // System.out.println(getElevatorPosition());
+        SmartDashboard.putBoolean("Intake Piece In", !PieceIn);
 
         // double ID = LimelightHelpers.getFiducialID("limelight");
         // SmartDashboard.putNumber("ID", ID);
@@ -134,7 +130,7 @@ public class SuperstructureSubsystem extends SubsystemBase {
         // //! Hand Controll elevator height
         // if (controller.getRawAxis(3) != 1){
         //     setElevatorPosition((((controller.getRawAxis(3)*-1)+1)/2)*70);
-        //     System.out.println(getElevatorPosition());
+
         // }
     }
 }

@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2808674069967063,
-        "y": 1.627226661597245
+        "x": 1.6443411468096572,
+        "y": 1.2364160052950057
       },
       "isLocked": false,
       "linkedName": "Feeder R"
     },
     {
       "anchor": {
-        "x": 3.6040178571428574,
-        "y": 2.543506493506493
+        "x": 3.165542763157894,
+        "y": 2.2642269736842104
       },
       "prevControl": {
-        "x": 2.5702192976351768,
-        "y": 1.8579017503116426
+        "x": 2.472779605263158,
+        "y": 1.4175164473684205
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Rief 21"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -41,13 +41,13 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.3,
+    "velocity": 1.0,
     "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": "Right",
   "idealStartingState": {
-    "velocity": 0.3,
+    "velocity": 0.0,
     "rotation": 55.0
   },
   "useDefaultConstraints": true

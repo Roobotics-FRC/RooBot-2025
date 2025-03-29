@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5684050324675325,
-        "y": 5.4780032467532465
+        "x": 3.8390624999999994,
+        "y": 5.150740131578948
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.328170107607579,
-        "y": 6.302517374681003
+        "x": 2.598827575140046,
+        "y": 5.975254259506704
       },
       "isLocked": false,
       "linkedName": "Rief 19"
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Feeder L"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],

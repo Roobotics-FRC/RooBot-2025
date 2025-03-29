@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -66,8 +67,6 @@ public class RiefGoTo extends Command {
         } catch (Exception e) {
             DriverStation.reportError("Failed to load AprilTag field layout", e.getStackTrace());
         }
-        
-        config();
 
         // //==============================================================
         // //!              For Tuning / Disable Later                    
@@ -86,6 +85,7 @@ public class RiefGoTo extends Command {
 
         resetPID();
         findClosestAprilTag();
+        config();
         if (closestTagId != -1) {
             updateTargetPosition();
         }
@@ -135,12 +135,12 @@ public class RiefGoTo extends Command {
             }
         });
 
-        // //==============================================================
-        // //!              For Tuning / Disable Later                    
-        // //==============================================================
-        // SmartDashboard.putNumber("X Error", targetX - currentPose.getX());
-        // SmartDashboard.putNumber("Y Error", targetY - currentPose.getY());
-        // SmartDashboard.putNumber("Yaw Error", targetYaw - currentPose.getRotation().getDegrees());
+        //!==============================================================
+        //!              For Tuning / Disable Later                    
+        //!==============================================================
+        SmartDashboard.putNumber("X Error", targetX - currentPose.getX());
+        SmartDashboard.putNumber("Y Error", targetY - currentPose.getY());
+        SmartDashboard.putNumber("Yaw Error", targetYaw - currentPose.getRotation().getDegrees());
     }
 
     @Override
@@ -166,15 +166,9 @@ public class RiefGoTo extends Command {
     private void config() {
         xPidController.setIZone(Constants.PID.thanslationalIZone);
         yPidController.setIZone(Constants.PID.thanslationalIZone);
-        if (!DriverStation.isAutonomous()) {
-            xPidController.setTolerance(Constants.PID.translationalTolerance);
-            yPidController.setTolerance(Constants.PID.translationalTolerance);
-            yawPidController.setTolerance(Constants.PID.rotationalTolerance);
-        } else {
-            xPidController.setTolerance(Constants.PID.translationalTolerance+0.1);
-            yPidController.setTolerance(Constants.PID.translationalTolerance+0.04);
-            yawPidController.setTolerance(Constants.PID.rotationalTolerance+1);
-        }
+        xPidController.setTolerance(Constants.PID.translationalTolerance);
+        yPidController.setTolerance(Constants.PID.translationalTolerance);
+        yawPidController.setTolerance(Constants.PID.rotationalTolerance);
         yawPidController.enableContinuousInput(-180, 180);
     }
 
@@ -213,7 +207,6 @@ public class RiefGoTo extends Command {
         
         double tagRotationDegrees = tagPose.getRotation().toRotation2d().getDegrees();
         double tagRotationRadians = Math.toRadians(tagRotationDegrees);
-
         double dx = relativeX * Math.cos(tagRotationRadians) - relativeY * Math.sin(tagRotationRadians);
         double dy = relativeX * Math.sin(tagRotationRadians) + relativeY * Math.cos(tagRotationRadians);
 

@@ -15,89 +15,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Barge To Rief 20"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Pre Raise"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "GoTo Rief R"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "L4Elevator"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "OutTake W/O"
-                }
-              },
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Rief 20 to Feeder L"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator Down"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "HoperUp W/O"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Hopper Up"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "deadline",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Feeder L To Rief 19"
+                        "pathName": "New Path"
                       }
                     },
                     {
@@ -141,19 +59,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Rief 19 To Feeder L"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Elevator Down"
+                        "pathName": "New New Path"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "HoperUp W/O"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator Down"
                       }
                     }
                   ]
@@ -179,7 +97,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Feeder L To Rief 19"
+                        "pathName": "New Path"
                       }
                     },
                     {
@@ -223,7 +141,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Rief 19 To Feeder L"
+                        "pathName": "New New Path"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "HoperUp W/O"
                       }
                     },
                     {
@@ -231,11 +155,87 @@
                       "data": {
                         "name": "Elevator Down"
                       }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Hopper Up"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "deadline",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "New Path"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Pre Raise"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "GoTo Rief L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "L4Elevator"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "OutTake W/O"
+                }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "New New Path"
+                      }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "HoperUp W/O"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Elevator Down"
                       }
                     }
                   ]
@@ -253,7 +253,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

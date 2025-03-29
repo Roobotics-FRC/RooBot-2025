@@ -163,7 +163,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
-        setVisionMeasurementStdDevs(VecBuilder.fill(.5, .5, 9999999));
+        setVisionMeasurementStdDevs(VecBuilder.fill(.2, .2, 9999999));
     }
 
     /**
@@ -281,13 +281,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         LimelightHelpers.SetRobotOrientation("limelight", getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0); 
-        // DriverStation.getAlliance().ifPresent(allianceColor -> {
-        //     if (allianceColor == Alliance.Red) {
-        //         limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-        //     } else {
-        //         limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-        //     }
-        // });
         limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
         try {
