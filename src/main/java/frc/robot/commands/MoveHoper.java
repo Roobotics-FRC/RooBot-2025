@@ -6,10 +6,14 @@ import frc.robot.subsystems.SuperstructureSubsystem;
 public class MoveHoper extends Command{
     SuperstructureSubsystem superstructureSubsystem;
     double pose;
+    boolean limit;
 
-    public MoveHoper(SuperstructureSubsystem m_SuperstructureSubsystem, double pose) {
-        this.superstructureSubsystem = m_SuperstructureSubsystem;
+    public MoveHoper(SuperstructureSubsystem superstructureSubsystem, double pose, boolean limit) {
+        this.superstructureSubsystem = superstructureSubsystem;
         this.pose = pose;
+        this.limit = limit;
+
+        addRequirements(superstructureSubsystem);
     }
 
     @Override
@@ -26,7 +30,7 @@ public class MoveHoper extends Command{
 
     @Override
     public boolean isFinished() {
-        if(pose == -3){
+        if(limit == false){
             return true;
         }else{
             return !superstructureSubsystem.PieceIn;

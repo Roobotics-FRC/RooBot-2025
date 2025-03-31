@@ -6,7 +6,7 @@ public class Constants {
 
         public static final double L2 = 22;
         public static final double L3 = 39;
-        public static final double L4 = 68;
+        public static final double L4 = 67;
 
         public static final double L2A = 19;
         public static final double L2AE = 28;

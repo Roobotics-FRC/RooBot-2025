@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
@@ -135,12 +134,12 @@ public class RiefGoTo extends Command {
             }
         });
 
-        //!==============================================================
-        //!              For Tuning / Disable Later                    
-        //!==============================================================
-        SmartDashboard.putNumber("X Error", targetX - currentPose.getX());
-        SmartDashboard.putNumber("Y Error", targetY - currentPose.getY());
-        SmartDashboard.putNumber("Yaw Error", targetYaw - currentPose.getRotation().getDegrees());
+        // //!==============================================================
+        // //!              For Tuning / Disable Later                    
+        // //!==============================================================
+        // SmartDashboard.putNumber("X Error", targetX - currentPose.getX());
+        // SmartDashboard.putNumber("Y Error", targetY - currentPose.getY());
+        // SmartDashboard.putNumber("Yaw Error", targetYaw - currentPose.getRotation().getDegrees());
     }
 
     @Override
