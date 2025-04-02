@@ -23,6 +23,7 @@ public class LEDSubsystem extends SubsystemBase {
         BREATHING,
         BLINKING,
         RAINBOW,
+        RAPID_BLINKING,
         CHASE
     }
 
@@ -45,6 +46,7 @@ public class LEDSubsystem extends SubsystemBase {
                     case BLINKING -> updateBlinking();
                     case SOLID -> setSolidColor(currentColor);
                     case OFF -> setSolidColor(Color.kBlack);
+                    case RAPID_BLINKING -> updateRapidBlinking();
                     default -> throw new IllegalArgumentException("Unexpected value: " + currentState);
         }
 
@@ -74,6 +76,11 @@ public class LEDSubsystem extends SubsystemBase {
         setSolidColor(dimmedColor);
     }
 
+    private void updateRapidBlinking() {
+        boolean isOn = ((int)(time * 8) % 2) == 0;  // 4x faster than normal blinking
+        setSolidColor(isOn ? currentColor : Color.kBlack);
+    }
+
     private void updateBlinking() {
         boolean isOn = ((int)(time * 2) % 2) == 0;
         setSolidColor(isOn ? currentColor : Color.kBlack);
@@ -101,6 +108,10 @@ public class LEDSubsystem extends SubsystemBase {
         setLEDState(LEDState.BLINKING, Color.kGreen);
     }
 
+    public void setFinishAligmentMode() {
+        setLEDState(LEDState.RAPID_BLINKING, Color.kGreen);
+    }
+
     public final void setDisabledMode() {
         if (DriverStation.getAlliance().isPresent()) {
             Color allianceColor = DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? 
@@ -119,17 +130,5 @@ public class LEDSubsystem extends SubsystemBase {
         } else {
             setLEDState(LEDState.BREATHING, Color.kWhite);
         }
-    }
-
-    public void setIntaking() {
-        setLEDState(LEDState.BLINKING, Color.kOrange);
-    }
-
-    public void setHasGamePiece() {
-        setLEDState(LEDState.SOLID, Color.kGreen);
-    }
-
-    public void setReadyToScore() {
-        setLEDState(LEDState.BLINKING, Color.kPurple);
     }
 }

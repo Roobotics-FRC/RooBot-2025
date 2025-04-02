@@ -12,7 +12,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -32,6 +34,7 @@ public class RiefGoTo extends Command {
 
     private AprilTagFieldLayout fieldLayout;
     private int closestTagId = -1;
+    private CommandXboxController controller;
 
     // Valid AprilTag IDs (6-11 and 17-22)
     private static final Set<Integer> VALID_TAG_IDS = Set.of(
@@ -51,12 +54,13 @@ public class RiefGoTo extends Command {
      * @param relativeY Distance to maintain in Y direction relative to the tag in meters
      * @param superstructureSubsystem The superstructure subsystem for LEDs
      */
-    public RiefGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, double relativeX, double relativeY, LEDSubsystem ledSubsystem) {
+    public RiefGoTo(CommandSwerveDrivetrain drivetrain, double maxSpeed, double relativeX, double relativeY, LEDSubsystem ledSubsystem, CommandXboxController controller) {
         this.drivetrain = drivetrain;
         this.maxSpeed = maxSpeed;
         this.relativeX = relativeX;
         this.relativeY = relativeY;
         this.ledSubsystem = ledSubsystem;
+        this.controller = controller;
         this.drive = new SwerveRequest.FieldCentric();
         
         addRequirements(drivetrain);
@@ -80,6 +84,7 @@ public class RiefGoTo extends Command {
 
     @Override
     public void initialize() {
+        ledSubsystem.setAlignmentMode();
         LimelightHelpers.setLEDMode_ForceOn("limelight");
 
         resetPID();
@@ -133,6 +138,13 @@ public class RiefGoTo extends Command {
                 );
             }
         });
+        if (!DriverStation.isAutonomous()) {
+            if(Math.abs(Math.abs(targetX) - Math.abs(currentPose.getX())) < Constants.PID.translationalTolerance * 2 && Math.abs(Math.abs(targetY) - Math.abs(currentPose.getY())) < Constants.PID.translationalTolerance * 2){
+                ledSubsystem.setFinishAligmentMode();
+                controller.setRumble(RumbleType.kBothRumble, 1);
+            }
+        }
+
 
         // //!==============================================================
         // //!              For Tuning / Disable Later                    
@@ -144,6 +156,7 @@ public class RiefGoTo extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        controller.setRumble(RumbleType.kBothRumble, 0);
         drivetrain.setControl(new SwerveRequest.SwerveDriveBrake());
         if (!DriverStation.isAutonomous()) {
             ledSubsystem.setTeleopMode();

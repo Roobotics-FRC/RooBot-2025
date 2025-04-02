@@ -39,7 +39,6 @@ import frc.robot.commands.MoveElevator;
 import frc.robot.commands.MoveHoper;
 import frc.robot.commands.OutTake;
 import frc.robot.commands.RiefGoTo;
-import frc.robot.commands.led.LEDCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LEDSubsystem;
@@ -69,7 +68,6 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final LEDSubsystem ledSubsystem = new LEDSubsystem(0, 320);
-    private final LEDCommands ledCommands = new LEDCommands(ledSubsystem);
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -80,43 +78,33 @@ public class RobotContainer {
     Command HopperDown = new MoveHoper(m_SuperstructureSubsystem, -3, false);
     Command HopperUp = new MoveHoper(m_SuperstructureSubsystem, 1, true);
 
-    Command L2DeAlgee = ledCommands.intaking()
-        .andThen(new MoveHoper(m_SuperstructureSubsystem, -3, false))
+    Command L2DeAlgee = new MoveHoper(m_SuperstructureSubsystem, -3, false)
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L2A, false))
         .andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L2AE))
-        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
-        .andThen(ledCommands.teleop());
-
-    Command L3DeAlgee = ledCommands.intaking()
-        .andThen(new MoveHoper(m_SuperstructureSubsystem, -3, false))
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false));
+    
+    Command L3DeAlgee = new MoveHoper(m_SuperstructureSubsystem, -3, false)
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L3A, false))
         .andThen(new DeAlgee(m_SuperstructureSubsystem, Positions.L3AE))
-        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
-        .andThen(ledCommands.teleop());
-
-    Command L2Score = ledCommands.readyToScore()
-        .andThen(new MoveHoper(m_SuperstructureSubsystem, -3, true))
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false));
+    
+    Command L2Score = new MoveHoper(m_SuperstructureSubsystem, -3, true)
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L2, false))
         .andThen(new OutTake(m_SuperstructureSubsystem, false))
         .andThen(new WaitCommand(WaitTimes.scoreWait))
-        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
-        .andThen(ledCommands.teleop());
-
-    Command L3Score = ledCommands.readyToScore()
-        .andThen(new MoveHoper(m_SuperstructureSubsystem, -3, true))
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false));
+    
+    Command L3Score = new MoveHoper(m_SuperstructureSubsystem, -3, true)
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L3, false))
         .andThen(new OutTake(m_SuperstructureSubsystem, false))
         .andThen(new WaitCommand(WaitTimes.scoreWait))
-        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
-        .andThen(ledCommands.teleop());
-
-    Command L4Score = ledCommands.readyToScore()
-        .andThen(new MoveHoper(m_SuperstructureSubsystem, -3, true))
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false));
+    
+    Command L4Score = new MoveHoper(m_SuperstructureSubsystem, -3, true)
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L4, false))
         .andThen(new OutTake(m_SuperstructureSubsystem, false))
         .andThen(new WaitCommand(WaitTimes.scoreWait))
-        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false))
-        .andThen(ledCommands.teleop());
+        .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L0, false));
 
     Command L2Elevator = new MoveHoper(m_SuperstructureSubsystem, -3, true)
         .andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L2, false));
@@ -134,19 +122,15 @@ public class RobotContainer {
     Command OutTakeAuto = new OutTake(m_SuperstructureSubsystem, false)
         .andThen(new WaitCommand(WaitTimes.scoreWait));
     
-    Command GoToRiefR = ledCommands.alignment()
-        .andThen(new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRiefR, ledSubsystem))
-        .andThen(ledCommands.teleop());
-    
-    Command GoToRiefL = ledCommands.alignment()
-        .andThen(new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRiefL, ledSubsystem))
-        .andThen(ledCommands.teleop());
+    Command GoToRiefR =new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRiefR, ledSubsystem,joystick);
+
+    Command GoToRiefL = new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief, Constants.Offsets.yRiefL, ledSubsystem,joystick);
 
     public RobotContainer() {
         //! Register the autonomous commands in here
         NamedCommands.registerCommand("Pre Raise", new MoveHoper(m_SuperstructureSubsystem, -3, true).andThen(new MoveElevator(m_SuperstructureSubsystem, Positions.L2, false)));
-        NamedCommands.registerCommand("GoTo Rief L",  new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief-0.07, Constants.Offsets.yRiefL, ledSubsystem));
-        NamedCommands.registerCommand("GoTo Rief R",  new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief-0.07, Constants.Offsets.yRiefR, ledSubsystem));
+        NamedCommands.registerCommand("GoTo Rief L",  new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief-0.07, Constants.Offsets.yRiefL, ledSubsystem,joystick));
+        NamedCommands.registerCommand("GoTo Rief R",  new RiefGoTo(drivetrain, MaxSpeed, Constants.Offsets.xRief-0.07, Constants.Offsets.yRiefR, ledSubsystem,joystick));
         NamedCommands.registerCommand("L3 Score", L3Score);
         NamedCommands.registerCommand("L2 Score", L2Score);
         NamedCommands.registerCommand("L4 Score", L4Score);
@@ -249,7 +233,7 @@ public class RobotContainer {
 
         joystick.x().whileTrue(GoToRiefL);
         joystick.b().whileTrue(GoToRiefR);
-        joystick.a().whileTrue(new RiefGoTo(drivetrain, MaxSpeed, -1, 0, ledSubsystem));
+        joystick.a().whileTrue(new RiefGoTo(drivetrain, MaxSpeed, -1, 0, ledSubsystem,joystick));
         joystick.rightBumper().whileTrue(new FeederGoTo(drivetrain, MaxSpeed));
         joystick.leftBumper().whileTrue(new FeederGoTo(drivetrain, MaxSpeed));
 
@@ -300,26 +284,23 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        /* Run the path selected from the auto chooser */
         return autoChooser.getSelected();
     }
-
+    
     public void autonomousInit() {
-        ledCommands.autonomous().schedule();
-        // ... other auto init code
+        ledSubsystem.setAutonomousMode(); 
     }
-
+    
     public void teleopInit() {
-        ledCommands.teleop().schedule();
-        // ... other teleop init code
+        ledSubsystem.setTeleopMode();
     }
-
+    
     public void disabledInit() {
         ledSubsystem.setDisabledMode();
     }
-
+    
     public void robotInit(){
-        ledCommands.disabled().schedule();
+        ledSubsystem.setDisabledMode();
     }
     
     public void periodic() {
