@@ -20,7 +20,7 @@ public class MoveHoper extends Command{
     public void initialize() {
         superstructureSubsystem.moveHoper(pose);
         if (superstructureSubsystem.PieceIn){
-            superstructureSubsystem.setIntakeSpeed(-0.6);
+            superstructureSubsystem.setIntakeSpeed(-0.8);
         }
     }
 

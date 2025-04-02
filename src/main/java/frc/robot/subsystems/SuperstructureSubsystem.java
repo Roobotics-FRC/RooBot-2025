@@ -120,7 +120,7 @@ public class SuperstructureSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         getElevatorPosition();
-        PieceIn = limitSwitch.get();
+        PieceIn = !limitSwitch.get();
         // System.out.println(getElevatorPosition());
         SmartDashboard.putBoolean("Intake Piece In", !PieceIn);
 

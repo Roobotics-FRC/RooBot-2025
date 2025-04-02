@@ -163,7 +163,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
-        setVisionMeasurementStdDevs(VecBuilder.fill(.2, .2, 9999999));
+        setVisionMeasurementStdDevs(VecBuilder.fill(.05, .05, 9999999));
     }
 
     /**
